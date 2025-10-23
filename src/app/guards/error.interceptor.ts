@@ -1,24 +1,27 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import {inject, Injectable} from '@angular/core';
+import {
+  HttpEvent,
+  HttpHandler,
+  HttpHandlerFn,
+  HttpInterceptor,
+  HttpInterceptorFn,
+  HttpRequest
+} from '@angular/common/http';
 import { AuthService, NotificationService } from '../services';
 import { catchError, Observable, throwError } from 'rxjs';
 
-@Injectable()
-export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService, private notificationService: NotificationService) {
-  }
+export const errorInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {
+  const authService = inject(AuthService);
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return next.handle(request).pipe(catchError(error => {
-      const errorStatus = error.status;
-      const errorMessage = error.error?.message ?? error.message;
+  return next(request).pipe(catchError(error => {
+    const errorStatus = error.status;
+    const errorMessage = error.error?.message ?? error.message;
 
-      if (errorStatus === 401) {
-        this.authService.logout();
-        window.location.href = '/auth/login';
-      }
+    if (errorStatus === 401) {
+      authService.logout();
+      window.location.href = '/auth/login';
+    }
 
-      return throwError(() => errorMessage);
-    }));
-  }
-}
+    return throwError(() => errorMessage);
+  }));
+};
