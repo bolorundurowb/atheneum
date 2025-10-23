@@ -10,9 +10,9 @@ import { LoginPage } from './login.page';
     IonicModule,
     CommonModule,
     FormsModule,
-    LoginPageRoutingModule
-  ],
-  declarations: [ LoginPage ]
+    LoginPageRoutingModule,
+    LoginPage
+  ]
 })
 export class LoginPageModule {
 }

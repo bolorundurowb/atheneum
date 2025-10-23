@@ -8,7 +8,7 @@ import { Component, Input } from '@angular/core';
     <div class="message">{{message}}</div>
   </div>
   `,
-  styleUrl: './empty.component.scss'
+  styleUrls: ['./empty.component.scss']
 })
 export class EmptyComponent {
   @Input() message!: string;

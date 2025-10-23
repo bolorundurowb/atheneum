@@ -10,9 +10,9 @@ import { AuthPage } from './auth.page';
     IonicModule,
     CommonModule,
     FormsModule,
-    AuthPageRoutingModule
-  ],
-  declarations: [ AuthPage ]
+    AuthPageRoutingModule,
+    AuthPage
+  ]
 })
 export class AuthPageModule {
 }

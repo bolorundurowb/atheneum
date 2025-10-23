@@ -10,9 +10,9 @@ import { RegisterPageRoutingModule } from './register-routing.module';
     IonicModule,
     CommonModule,
     FormsModule,
-    RegisterPageRoutingModule
-  ],
-  declarations: [ RegisterPage ]
+    RegisterPageRoutingModule,
+    RegisterPage
+  ]
 })
 export class RegisterPageModule {
 }

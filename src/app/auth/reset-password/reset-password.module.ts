@@ -10,9 +10,9 @@ import { ResetPasswordPageRoutingModule } from './reset-password-routing.module'
     IonicModule,
     CommonModule,
     FormsModule,
-    ResetPasswordPageRoutingModule
-  ],
-  declarations: [ ResetPasswordPage ]
+    ResetPasswordPageRoutingModule,
+    ResetPasswordPage
+  ]
 })
 export class ResetPasswordPageModule {
 }

@@ -10,9 +10,9 @@ import { ForgotPasswordPageRoutingModule } from './forgot-password-routing.modul
     IonicModule,
     CommonModule,
     FormsModule,
-    ForgotPasswordPageRoutingModule
-  ],
-  declarations: [ ForgotPasswordPage ]
+    ForgotPasswordPageRoutingModule,
+    ForgotPasswordPage
+  ]
 })
 export class ForgotPasswordPageModule {
 }

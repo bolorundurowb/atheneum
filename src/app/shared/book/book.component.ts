@@ -5,15 +5,17 @@ import { convertToHttps } from '../../utils';
   selector: 'app-book',
   template: `
     <div class="book">
-      <img [src]="convertToHttps(book.coverArt)"/>
+      <img [src]="httpsCoverArt"/>
       <div class="title">{{ book.title }}</div>
       <div class="author">{{ book.authors ? book.authors[0]?.name : book.authorName }}</div>
     </div>
   `,
-  styleUrl: './book.component.scss'
+  styleUrls: ['./book.component.scss']
 })
 export class BookComponent {
   @Input() book: any;
 
-  protected readonly convertToHttps = convertToHttps;
+  get httpsCoverArt() {
+    return convertToHttps(this.book.coverArt);
+  }
 }
