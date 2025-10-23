@@ -1,5 +1,5 @@
-import {mapToCanActivate, Routes} from "@angular/router";
-import {AuthGuard} from "./guards";
+import { mapToCanActivate, Routes } from '@angular/router';
+import { AuthGuard } from './guards';
 
 export const routes: Routes = [
   {

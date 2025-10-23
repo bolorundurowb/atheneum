@@ -1,9 +1,9 @@
-import {Component, inject, OnInit} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NotificationService, WishlistService } from '../../services';
-import {FormsModule} from "@angular/forms";
-import {BookComponent} from "../../shared/book/book.component";
-import {EmptyComponent} from "../../shared/empty/empty.component";
-import {IonicModule} from "@ionic/angular";
+import { FormsModule } from '@angular/forms';
+import { BookComponent } from '../../shared/book/book.component';
+import { EmptyComponent } from '../../shared/empty/empty.component';
+import { IonicModule } from '@ionic/angular';
 
 interface AddToWishlistPayload {
   bookTitle?: string;

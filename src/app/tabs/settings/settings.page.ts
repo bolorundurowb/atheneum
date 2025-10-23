@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
-import {IonicModule} from "@ionic/angular";
-import {FormsModule} from "@angular/forms";
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 interface UpdateProfilePayload {
   id?: string;

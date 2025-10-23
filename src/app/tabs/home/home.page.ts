@@ -7,10 +7,10 @@ import {
   PublisherService,
   StatisticService
 } from '../../services';
-import {IonicModule, NavController} from '@ionic/angular';
-import {FormsModule} from "@angular/forms";
-import {EmptyComponent} from "../../shared/empty/empty.component";
-import {BookComponent} from "../../shared/book/book.component";
+import { IonicModule, NavController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { EmptyComponent } from '../../shared/empty/empty.component';
+import { BookComponent } from '../../shared/book/book.component';
 
 @Component({
   selector: 'app-home',

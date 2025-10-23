@@ -1,8 +1,8 @@
-import {Component, inject, OnInit} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { ActivatedRoute, Router } from '@angular/router';
-import {IonicModule} from "@ionic/angular";
-import {FormsModule} from "@angular/forms";
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 interface ResetPasswordPayload {
   emailAddress?: string;

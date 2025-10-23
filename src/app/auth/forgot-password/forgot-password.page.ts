@@ -1,8 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
-import { Router } from '@angular/router';
-import {IonicModule, NavController} from '@ionic/angular';
-import {FormsModule} from "@angular/forms";
+import { IonicModule, NavController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 interface ForgotPasswordPayload {
   emailAddress?: string;

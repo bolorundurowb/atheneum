@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BookService, NotificationService } from '../services';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
-import {AlertController, IonicModule} from '@ionic/angular';
-import {FormsModule} from "@angular/forms";
+import { AlertController, IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 export interface ManualBookPayload {
   title?: string;

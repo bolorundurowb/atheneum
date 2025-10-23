@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BookService, NotificationService } from '../../services';
-import {InfiniteScrollCustomEvent, IonicModule, NavController} from '@ionic/angular';
-import {FormsModule} from "@angular/forms";
-import {BookComponent} from "../../shared/book/book.component";
-import {EmptyComponent} from "../../shared/empty/empty.component";
+import { InfiniteScrollCustomEvent, IonicModule, NavController } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { BookComponent } from '../../shared/book/book.component';
+import { EmptyComponent } from '../../shared/empty/empty.component';
 
 @Component({
   selector: 'app-library',

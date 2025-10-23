@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import {IonicModule, NavController} from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 import { BookService, NotificationService } from '../../services';
 import { convertToHttps } from '../../utils';
-import {DatePipe} from "@angular/common";
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-book-details',
@@ -50,6 +50,6 @@ export class BookPage implements OnInit {
   }
 
   async goBack() {
-    await this.navCtrl.pop();
+    console.log(await this.navCtrl.pop());
   }
 }

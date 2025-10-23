@@ -2,8 +2,8 @@ import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import {IonicModule} from "@ionic/angular";
-import {FormsModule} from "@angular/forms";
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
 
 interface RegisterPayload {
   fullName?: string;
