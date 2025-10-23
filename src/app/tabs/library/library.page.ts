@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { BookService, NotificationService } from '../../services';
 import {InfiniteScrollCustomEvent, IonicModule, NavController} from '@ionic/angular';
 import {FormsModule} from "@angular/forms";
@@ -18,16 +18,16 @@ import {EmptyComponent} from "../../shared/empty/empty.component";
   ]
 })
 export class LibraryPage implements OnInit {
+  private bookService = inject(BookService);
+  private notificationService = inject(NotificationService);
+  private navCtrl = inject(NavController);
+
   isLoading = false;
   books: any[] = [];
 
   search?: string;
   currentPage = 1;
   limit = 50;
-
-  constructor(private bookService: BookService, private notificationService: NotificationService,
-              private navCtrl: NavController) {
-  }
 
   async ngOnInit() {
     this.isLoading = true;

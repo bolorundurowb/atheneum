@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
 import {IonicModule, NavController} from '@ionic/angular';
@@ -19,12 +19,12 @@ interface ForgotPasswordPayload {
   ]
 })
 export class ForgotPasswordPage {
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private navCtrl = inject(NavController);
+
   isRequesting = false;
   payload: ForgotPasswordPayload = {};
-
-  constructor(private authService: AuthService, private notificationService: NotificationService,
-              private navCtrl: NavController) {
-  }
 
   async requestReset() {
     this.isRequesting = true;

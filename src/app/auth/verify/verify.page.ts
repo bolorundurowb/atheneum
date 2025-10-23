@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
 import {IonicModule} from "@ionic/angular";
@@ -19,15 +19,15 @@ interface VerificationPayload {
   ]
 })
 export class VerifyPage implements OnInit {
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+
   isVerifying = false;
   payload: VerificationPayload = {};
 
   isResending = false;
   resendWaitRemaining = 0;
-
-  constructor(private authService: AuthService, private notificationService: NotificationService,
-              private router: Router) {
-  }
 
   ngOnInit() {
     this.setupResend();

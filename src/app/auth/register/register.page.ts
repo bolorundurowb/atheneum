@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
@@ -23,12 +23,13 @@ interface RegisterPayload {
   ]
 })
 export class RegisterPage {
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+  private location = inject(Location);
+
   isRegistering = false;
   payload: RegisterPayload = {};
-
-  constructor(private authService: AuthService, private notificationService: NotificationService,
-              private router: Router, private location: Location) {
-  }
 
   async register() {
     this.isRegistering = true;

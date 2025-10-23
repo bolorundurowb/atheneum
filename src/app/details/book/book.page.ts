@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {IonicModule, NavController} from '@ionic/angular';
 import { BookService, NotificationService } from '../../services';
@@ -16,6 +16,11 @@ import {DatePipe} from "@angular/common";
   ]
 })
 export class BookPage implements OnInit {
+  private route = inject(ActivatedRoute);
+  private navCtrl = inject(NavController);
+  private notificationService = inject(NotificationService);
+  private bookService = inject(BookService);
+
   book: any;
   removeButtons = [
     {
@@ -39,10 +44,6 @@ export class BookPage implements OnInit {
   ];
 
   protected readonly convertToHttps = convertToHttps;
-
-  constructor(private route: ActivatedRoute, private navCtrl: NavController,
-              private notificationService: NotificationService, private bookService: BookService) {
-  }
 
   ngOnInit() {
     this.book = JSON.parse((this.route.snapshot.queryParams as any).book);

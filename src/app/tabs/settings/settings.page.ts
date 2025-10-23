@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { AccountService, AuthService, NotificationService, UserService } from '../../services';
 import { Router } from '@angular/router';
 
@@ -31,6 +31,12 @@ interface ChangePasswordPayload {
   ]
 })
 export class SettingsPage implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private userService = inject(UserService);
+  private notificationService = inject(NotificationService);
+  private accountService = inject(AccountService);
+
   appVersion?: string;
   logOutButtons = [
     {
@@ -71,10 +77,6 @@ export class SettingsPage implements OnInit {
 
   isChangingPassword = false;
   changePayload: ChangePasswordPayload = {};
-
-  constructor(private authService: AuthService, private router: Router, private userService: UserService,
-              private notificationService: NotificationService, private accountService: AccountService) {
-  }
 
   async ngOnInit() {
     this.appVersion = await this.getAppVersion();

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {
   AuthorService,
   AuthService,
@@ -25,17 +25,20 @@ import {BookComponent} from "../../shared/book/book.component";
   ]
 })
 export class HomePage implements OnInit {
+  private bookService = inject(BookService);
+  private authorService = inject(AuthorService);
+  private publisherService = inject(PublisherService);
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private navCtrl = inject(NavController);
+  private statService = inject(StatisticService);
+
   isLoading = false;
   currentUser: any = {};
   stats: any = {};
   recentBooks: any[] = [];
   topAuthors: any[] = [];
   topPublishers: any[] = [];
-
-  constructor(private bookService: BookService, private authorService: AuthorService, private publisherService: PublisherService,
-              private authService: AuthService, private notificationService: NotificationService, private navCtrl: NavController,
-              private statService: StatisticService) {
-  }
 
   async ngOnInit() {
     this.isLoading = true;

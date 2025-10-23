@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
 import {IonicModule} from "@ionic/angular";
@@ -20,12 +20,12 @@ interface LoginPayload {
   ]
 })
 export class LoginPage {
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+
   isLoggingIn = false;
   payload: LoginPayload = {};
-
-  constructor(private authService: AuthService, private notificationService: NotificationService,
-              private router: Router) {
-  }
 
   async login() {
     this.isLoggingIn = true;

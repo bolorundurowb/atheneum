@@ -1,14 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { asPromise } from '../utils';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private http = inject(HttpClient);
+
   userKey = 'atheneum-user';
   private readonly baseUrl;
 
-  constructor(private http: HttpClient) {
+  constructor() {
     this.baseUrl = `${environment.baseApiUrl}/v1/auth`;
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { BookService, NotificationService } from '../services';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
 import {AlertController, IonicModule} from '@ionic/angular';
@@ -29,6 +29,10 @@ export interface ManualIsbnPayload {
   ]
 })
 export class TabsPage implements OnInit {
+  private bookService = inject(BookService);
+  private notificationService = inject(NotificationService);
+  private alertController = inject(AlertController);
+
   public actionSheetButtons = [
     {
       text: 'scan barcode',
@@ -75,10 +79,6 @@ export class TabsPage implements OnInit {
   isbnPayload: ManualIsbnPayload = {};
 
   isBarcodeScanningSupported = false;
-
-  constructor(private bookService: BookService, private notificationService: NotificationService,
-              private alertController: AlertController) {
-  }
 
   async ngOnInit() {
     const result = await BarcodeScanner.isSupported();
