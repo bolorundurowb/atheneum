@@ -10,34 +10,30 @@
   </div>
 
   @if (isLoading) {
-  <div class="page-loader">
-    <ion-spinner name="lines-sharp"></ion-spinner>
-  </div>
-  }
-
-  @if (!isLoading) {
-    <ion-refresher slot="fixed" (ionRefresh)="handlePullRefresh($event)">
-      <ion-refresher-content></ion-refresher-content>
-    </ion-refresher>
-
-    <div class="ion-content-scroll-host ion-padding wish-content">
-      @if (!wishlist.length) {
-        <app-empty message="You have no wishlist items, feel free to add some!"></app-empty>
-      }
-
-      @if (wishlist.length) {
-        <ion-grid>
-          <ion-row>
-            @for (book of wishlist; track $index) {
-            <ion-col size="4">
-              <app-book [book]="book"></app-book>
-            </ion-col>
-            }
-          </ion-row>
-        </ion-grid>
-      }
+    <div class="page-loader">
+      <ion-spinner name="lines-sharp"></ion-spinner>
     </div>
+  } @else {
+  <ion-refresher slot="fixed" (ionRefresh)="handlePullRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="ion-content-scroll-host ion-padding wish-content">
+    @if (!wishlist.length) {
+      <app-empty message="You have no wishlist items, feel free to add some!"></app-empty>
+    } @else {
+    <ion-grid>
+      <ion-row>
+        @for (book of wishlist; track $index) {
+          <ion-col size="4">
+            <app-book [book]="book"></app-book>
+          </ion-col>
+        }
+      </ion-row>
+    </ion-grid>
   }
+  </div>
+}
 </ion-content>
 
 <ion-modal #modal
@@ -84,7 +80,7 @@
             label="isbn"
             fill="outline"
             label-placement="floating"
-            type="numeric"
+            type="text"
             placeholder="1234567890123"
             [(ngModel)]="addPayload.bookIsbn"></ion-input>
         </div>
@@ -98,8 +94,8 @@
             @if (isAdding) {
               <ion-spinner name="lines-sharp"></ion-spinner>
             } @else {
-              add to list
-            }
+            add to list
+          }
           </ion-button>
         </div>
       </form>

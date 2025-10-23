@@ -50,6 +50,10 @@ export class BookPage implements OnInit {
   }
 
   async goBack() {
-    console.log(await this.navCtrl.pop());
+    const wasPopped = await this.navCtrl.pop();
+
+    if (!wasPopped) {
+      this.navCtrl.back();
+    }
   }
 }

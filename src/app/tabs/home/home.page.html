@@ -9,129 +9,124 @@
   </div>
 
   @if (isLoading) {
-  <div class="page-loader">
-    <ion-spinner name="lines-sharp"></ion-spinner>
-  </div>
-  }
+    <div class="page-loader">
+      <ion-spinner name="lines-sharp"></ion-spinner>
+    </div>
+  } @else {
+  <div class="home-page-content">
+    <div class="statistics">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <div class="stat-card book">
+              <div class="image">
+                <img src="/assets/images/book.png"/>
+              </div>
+              <div class="values">
+                <div class="count">{{ stats.books ?? '--' }}</div>
+                <div class="description">book{{ stats.books === 1 ? '' : 's' }}</div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat-card author">
+              <div class="image">
+                <img src="/assets/images/author.png"/>
+              </div>
+              <div class="values">
+                <div class="count">{{ stats.authors ?? '--' }}</div>
+                <div class="description">author{{ stats.authors === 1 ? '' : 's' }}</div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat-card publisher">
+              <div class="image">
+                <img src="/assets/images/publisher.png"/>
+              </div>
+              <div class="values">
+                <div class="count">{{ stats.publishers ?? '--' }}</div>
+                <div class="description">publisher{{ stats.publishers === 1 ? '' : 's' }}</div>
+              </div>
+            </div>
+          </ion-col>
+          <ion-col size="6">
+            <div class="stat-card wishlist">
+              <div class="image">
+                <img src="/assets/images/wishlist.png"/>
+              </div>
+              <div class="values">
+                <div class="count">{{ stats.wishListItems ?? '--' }}</div>
+                <div class="description">wishlist item{{ stats.wishListItems === 1 ? '' : 's' }}</div>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
 
-  @if (!isLoading) {
-    <div class="home-page-content">
-      <div class="statistics">
+    <div class="section">
+      <div class="header">recently added</div>
+      @if (!recentBooks.length) {
+        <app-empty message="You have no library items, feel free to add some!"></app-empty>
+      } @else {
+      <div>
         <ion-grid>
           <ion-row>
-            <ion-col size="6">
-              <div class="stat-card book">
-                <div class="image">
-                  <img src="/assets/images/book.png"/>
-                </div>
-                <div class="values">
-                  <div class="count">{{ stats.books ?? '--' }}</div>
-                  <div class="description">book{{ stats.books === 1 ? '' : 's' }}</div>
-                </div>
-              </div>
-            </ion-col>
-            <ion-col size="6">
-              <div class="stat-card author">
-                <div class="image">
-                  <img src="/assets/images/author.png"/>
-                </div>
-                <div class="values">
-                  <div class="count">{{ stats.authors ?? '--' }}</div>
-                  <div class="description">author{{ stats.authors === 1 ? '' : 's' }}</div>
-                </div>
-              </div>
-            </ion-col>
-            <ion-col size="6">
-              <div class="stat-card publisher">
-                <div class="image">
-                  <img src="/assets/images/publisher.png"/>
-                </div>
-                <div class="values">
-                  <div class="count">{{ stats.publishers ?? '--' }}</div>
-                  <div class="description">publisher{{ stats.publishers === 1 ? '' : 's' }}</div>
-                </div>
-              </div>
-            </ion-col>
-            <ion-col size="6">
-              <div class="stat-card wishlist">
-                <div class="image">
-                  <img src="/assets/images/wishlist.png"/>
-                </div>
-                <div class="values">
-                  <div class="count">{{ stats.wishListItems ?? '--' }}</div>
-                  <div class="description">wishlist item{{ stats.wishListItems === 1 ? '' : 's' }}</div>
-                </div>
-              </div>
-            </ion-col>
+            @for (book of recentBooks; track $index) {
+              <ion-col size="4">
+                <app-book [book]="book" (click)="goToBookDetails(book)"></app-book>
+              </ion-col>
+            }
           </ion-row>
         </ion-grid>
       </div>
-
-      <div class="section">
-        <div class="header">recently added</div>
-        @if (!recentBooks.length) {
-          <app-empty message="You have no library items, feel free to add some!"></app-empty>
-        }
-        @if (recentBooks.length) {
-          <div>
-            <ion-grid>
-              <ion-row>
-                @for (book of recentBooks; track $index) {
-                <ion-col size="4">
-                  <app-book [book]="book" (click)="goToBookDetails(book)"></app-book>
-                </ion-col>
-                }
-              </ion-row>
-            </ion-grid>
-          </div>
-        }
-      </div>
-
-      <div class="section">
-        <div class="header">top authors</div>
-        @if (!topAuthors.length) {
-          <app-empty message="You have no authors"></app-empty>
-        }
-        @if (topAuthors.length) {
-          <div>
-            <ion-grid>
-              <ion-row>
-                @for (author of topAuthors; track $index) {
-                <ion-col size="4">
-                  <div class="recent-card">
-                    <div class="name">{{ author.author.name }}</div>
-                    <div class="count">{{ author.numOfBooks }}</div>
-                  </div>
-                </ion-col>
-                }
-              </ion-row>
-            </ion-grid>
-          </div>
-        }
-      </div>
-
-      <div class="section">
-        <div class="header">top publishers</div>
-        @if (!topPublishers.length) {
-          <app-empty message="You have no publishers"></app-empty>
-        }
-        @if (topPublishers.length) {
-          <div>
-            <ion-grid>
-              <ion-row>
-                @for (publisher of topPublishers; track $index) {
-                <ion-col size="4">
-                  <div class="recent-card">
-                    <div class="name">{{ publisher.publisher.name }}</div>
-                    <div class="count">{{ publisher.numOfBooks }}</div>
-                  </div>
-                </ion-col>
-                }
-              </ion-row>
-            </ion-grid>
-          </div>
-        }
-      </div>
+    }
     </div>
-  }
+
+    <div class="section">
+      <div class="header">top authors</div>
+      @if (!topAuthors.length) {
+        <app-empty message="You have no authors"></app-empty>
+      } @else {
+      <div>
+        <ion-grid>
+          <ion-row>
+            @for (author of topAuthors; track $index) {
+              <ion-col size="4">
+                <div class="recent-card">
+                  <div class="name">{{ author.author.name }}</div>
+                  <div class="count">{{ author.numOfBooks }}</div>
+                </div>
+              </ion-col>
+            }
+          </ion-row>
+        </ion-grid>
+      </div>
+    }
+    </div>
+
+    <div class="section">
+      <div class="header">top publishers</div>
+      @if (!topPublishers.length) {
+        <app-empty message="You have no publishers"></app-empty>
+      } @else {
+      <div>
+        <ion-grid>
+          <ion-row>
+            @for (publisher of topPublishers; track $index) {
+              <ion-col size="4">
+                <div class="recent-card">
+                  <div class="name">{{ publisher.publisher.name }}</div>
+                  <div class="count">{{ publisher.numOfBooks }}</div>
+                </div>
+              </ion-col>
+            }
+          </ion-row>
+        </ion-grid>
+      </div>
+    }
+    </div>
+  </div>
+}
 </ion-content>
