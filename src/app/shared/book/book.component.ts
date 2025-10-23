@@ -3,6 +3,7 @@ import { convertToHttps } from '../../utils';
 
 @Component({
   selector: 'app-book',
+  standalone: true,
   template: `
     <div class="book">
       <img [src]="httpsCoverArt"/>

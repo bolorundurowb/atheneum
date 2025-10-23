@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import {IonicModule, NavController} from '@ionic/angular';
+import {FormsModule} from "@angular/forms";
 
 interface ForgotPasswordPayload {
   emailAddress?: string;
@@ -9,8 +10,13 @@ interface ForgotPasswordPayload {
 
 @Component({
   selector: 'app-forgot-password',
+  standalone: true,
   templateUrl: 'forgot-password.page.html',
-  styleUrls: [ 'forgot-password.page.scss' ]
+  styleUrls: [ 'forgot-password.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule
+  ]
 })
 export class ForgotPasswordPage {
   isRequesting = false;

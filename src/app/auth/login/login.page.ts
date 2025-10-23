@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
+import {IonicModule} from "@ionic/angular";
+import {FormsModule} from "@angular/forms";
 
 interface LoginPayload {
   emailAddress?: string;
@@ -9,8 +11,13 @@ interface LoginPayload {
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   templateUrl: 'login.page.html',
-  styleUrls: [ 'login.page.scss' ]
+  styleUrls: [ 'login.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule
+  ]
 })
 export class LoginPage {
   isLoggingIn = false;

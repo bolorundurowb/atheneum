@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { ActivatedRoute, Router } from '@angular/router';
+import {IonicModule} from "@ionic/angular";
+import {FormsModule} from "@angular/forms";
 
 interface ResetPasswordPayload {
   emailAddress?: string;
@@ -11,8 +13,13 @@ interface ResetPasswordPayload {
 
 @Component({
   selector: 'app-reset-password',
+  standalone: true,
   templateUrl: 'reset-password.page.html',
-  styleUrls: [ 'reset-password.page.scss' ]
+  styleUrls: [ 'reset-password.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule
+  ]
 })
 export class ResetPasswordPage implements OnInit {
   isRequesting = false;

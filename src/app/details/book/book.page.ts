@@ -1,13 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import {IonicModule, NavController} from '@ionic/angular';
 import { BookService, NotificationService } from '../../services';
 import { convertToHttps } from '../../utils';
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-book-details',
+  standalone: true,
   templateUrl: 'book.page.html',
-  styleUrl: 'book.page.scss'
+  styleUrl: 'book.page.scss',
+  imports: [
+    IonicModule,
+    DatePipe
+  ]
 })
 export class BookPage implements OnInit {
   book: any;

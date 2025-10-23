@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { BookService, NotificationService } from '../services';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
-import { AlertController } from '@ionic/angular';
+import {AlertController, IonicModule} from '@ionic/angular';
+import {FormsModule} from "@angular/forms";
 
 export interface ManualBookPayload {
   title?: string;
@@ -19,8 +20,13 @@ export interface ManualIsbnPayload {
 
 @Component({
   selector: 'app-tabs',
+  standalone: true,
   templateUrl: 'tabs.page.html',
-  styleUrls: [ 'tabs.page.scss' ]
+  styleUrls: [ 'tabs.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule
+  ]
 })
 export class TabsPage implements OnInit {
   public actionSheetButtons = [

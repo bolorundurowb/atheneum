@@ -1,11 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { BookService, NotificationService } from '../../services';
-import { InfiniteScrollCustomEvent, NavController } from '@ionic/angular';
+import {InfiniteScrollCustomEvent, IonicModule, NavController} from '@ionic/angular';
+import {FormsModule} from "@angular/forms";
+import {BookComponent} from "../../shared/book/book.component";
+import {EmptyComponent} from "../../shared/empty/empty.component";
 
 @Component({
   selector: 'app-library',
+  standalone: true,
   templateUrl: 'library.page.html',
-  styleUrls: [ 'library.page.scss' ]
+  styleUrls: [ 'library.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule,
+    BookComponent,
+    EmptyComponent
+  ]
 })
 export class LibraryPage implements OnInit {
   isLoading = false;

@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
+import {IonicModule} from "@ionic/angular";
+import {FormsModule} from "@angular/forms";
 
 interface UpdateProfilePayload {
   id?: string;
@@ -20,8 +22,13 @@ interface ChangePasswordPayload {
 
 @Component({
   selector: 'app-settings',
+  standalone: true,
   templateUrl: 'settings.page.html',
-  styleUrls: [ 'settings.page.scss' ]
+  styleUrls: [ 'settings.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule
+  ]
 })
 export class SettingsPage implements OnInit {
   appVersion?: string;

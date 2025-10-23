@@ -7,6 +7,7 @@ import {PreloadAllModules, provideRouter, RouteReuseStrategy, withPreloading} fr
 import {routes} from "./app/app.routes";
 import {AppComponent} from "./app/app.component";
 import {bootstrapApplication} from "@angular/platform-browser";
+import {provideHttpClient, withInterceptors} from "@angular/common/http";
 
 if (environment.production) {
   enableProdMode();
@@ -17,5 +18,6 @@ bootstrapApplication(AppComponent, {
     {provide: RouteReuseStrategy, useClass: IonicRouteStrategy},
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules)),
+    // provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
   ],
 }).catch(err => console.log(err));

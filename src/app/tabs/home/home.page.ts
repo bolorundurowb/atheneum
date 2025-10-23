@@ -7,12 +7,22 @@ import {
   PublisherService,
   StatisticService
 } from '../../services';
-import { NavController } from '@ionic/angular';
+import {IonicModule, NavController} from '@ionic/angular';
+import {FormsModule} from "@angular/forms";
+import {EmptyComponent} from "../../shared/empty/empty.component";
+import {BookComponent} from "../../shared/book/book.component";
 
 @Component({
   selector: 'app-home',
+  standalone: true,
   templateUrl: 'home.page.html',
-  styleUrls: [ 'home.page.scss' ]
+  styleUrls: [ 'home.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule,
+    BookComponent,
+    EmptyComponent
+  ]
 })
 export class HomePage implements OnInit {
   isLoading = false;

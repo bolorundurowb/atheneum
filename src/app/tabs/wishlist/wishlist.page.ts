@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { NotificationService, WishlistService } from '../../services';
+import {FormsModule} from "@angular/forms";
+import {BookComponent} from "../../shared/book/book.component";
+import {EmptyComponent} from "../../shared/empty/empty.component";
+import {IonicModule} from "@ionic/angular";
 
 interface AddToWishlistPayload {
   bookTitle?: string;
@@ -9,18 +13,25 @@ interface AddToWishlistPayload {
 
 @Component({
   selector: 'app-wishlist',
+  standalone: true,
   templateUrl: 'wishlist.page.html',
-  styleUrls: [ 'wishlist.page.scss' ]
+  styleUrls: [ 'wishlist.page.scss' ],
+  imports: [
+    FormsModule,
+    IonicModule,
+    BookComponent,
+    EmptyComponent
+  ]
 })
 export class WishlistPage implements OnInit {
+  private wishlistService = inject(WishlistService);
+  private notificationService = inject(NotificationService);
+
   isLoading = false;
   wishlist: any[] = [];
 
   isAdding: boolean = false;
   addPayload: AddToWishlistPayload = {};
-
-  constructor(private wishlistService: WishlistService, private notificationService: NotificationService) {
-  }
 
   async ngOnInit() {
     this.isLoading = true;

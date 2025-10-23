@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
+import {IonicModule} from "@ionic/angular";
+import {FormsModule} from "@angular/forms";
 
 interface RegisterPayload {
   fullName?: string;
@@ -12,8 +14,13 @@ interface RegisterPayload {
 
 @Component({
   selector: 'app-register',
+  standalone: true,
   templateUrl: 'register.page.html',
-  styleUrls: [ 'register.page.scss' ]
+  styleUrls: [ 'register.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule
+  ]
 })
 export class RegisterPage {
   isRegistering = false;

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
+import {IonicModule} from "@ionic/angular";
+import {FormsModule} from "@angular/forms";
 
 interface VerificationPayload {
   verificationCode?: string;
@@ -8,8 +10,13 @@ interface VerificationPayload {
 
 @Component({
   selector: 'app-verify',
+  standalone: true,
   templateUrl: 'verify.page.html',
-  styleUrls: [ 'verify.page.scss' ]
+  styleUrls: [ 'verify.page.scss' ],
+  imports: [
+    IonicModule,
+    FormsModule
+  ]
 })
 export class VerifyPage implements OnInit {
   isVerifying = false;
