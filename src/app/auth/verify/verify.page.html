@@ -32,12 +32,11 @@
         mode="ios"
         [disabled]="isVerifying"
         (click)="verify()">
-        <ng-container *ngIf="isVerifying">
+        @if (isVerifying) {
           <ion-spinner name="lines-sharp"></ion-spinner>
-        </ng-container>
-        <ng-container *ngIf="!isVerifying">
+        } @else {
           verify account
-        </ng-container>
+        }
       </ion-button>
 
       <ion-button
@@ -46,17 +45,15 @@
         class="inverted"
         [disabled]="isResending || resendWaitRemaining !== 0"
         (click)="resend()">
-        <ng-container *ngIf="isResending">
+        @if (isResending) {
           <ion-spinner name="lines-sharp"></ion-spinner>
-        </ng-container>
-        <ng-container *ngIf="!isResending">
-          <ng-container *ngIf="resendWaitRemaining === 0">
+        } @else {
+          @if (resendWaitRemaining === 0) {
             resend verification code
-          </ng-container>
-          <ng-container *ngIf="resendWaitRemaining !== 0">
+          } @else {
             resend code in {{resendWaitRemaining}}s ...
-          </ng-container>
-        </ng-container>
+          }
+        }
       </ion-button>
     </div>
   </div>

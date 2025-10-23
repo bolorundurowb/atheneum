@@ -61,12 +61,11 @@
             mode="ios"
             [disabled]="isUpdatingProfile"
             (click)="updateProfile()">
-            <ng-container *ngIf="isUpdatingProfile">
+            @if (isUpdatingProfile) {
               <ion-spinner name="lines-sharp"></ion-spinner>
-            </ng-container>
-            <ng-container *ngIf="!isUpdatingProfile">
+            } @else {
               update profile
-            </ng-container>
+            }
           </ion-button>
         </div>
       </div>
@@ -112,12 +111,11 @@
             mode="ios"
             [disabled]="isChangingPassword"
             (click)="changePassword()">
-            <ng-container *ngIf="isChangingPassword">
+            @if (isChangingPassword) {
               <ion-spinner name="lines-sharp"></ion-spinner>
-            </ng-container>
-            <ng-container *ngIf="!isChangingPassword">
+            } @else {
               update password
-            </ng-container>
+            }
           </ion-button>
         </div>
       </div>

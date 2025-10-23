@@ -66,12 +66,11 @@
         mode="ios"
         [disabled]="isRegistering"
         (click)="register()">
-        <ng-container *ngIf="isRegistering">
+        @if (isRegistering) {
           <ion-spinner name="lines-sharp"></ion-spinner>
-        </ng-container>
-        <ng-container *ngIf="!isRegistering">
+        } @else {
           register
-        </ng-container>
+        }
       </ion-button>
 
       <div class="join-us">

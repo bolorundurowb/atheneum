@@ -8,11 +8,13 @@
     </div>
   </div>
 
-  <div class="page-loader" *ngIf="isLoading">
+  @if (isLoading) {
+  <div class="page-loader">
     <ion-spinner name="lines-sharp"></ion-spinner>
   </div>
+  }
 
-  <ng-container *ngIf="!isLoading">
+  @if (!isLoading) {
     <div class="home-page-content">
       <div class="statistics">
         <ion-grid>
@@ -67,66 +69,69 @@
 
       <div class="section">
         <div class="header">recently added</div>
-        <ng-container *ngIf="!recentBooks.length">
+        @if (!recentBooks.length) {
           <app-empty message="You have no library items, feel free to add some!"></app-empty>
-        </ng-container>
-        <ng-container *ngIf="recentBooks.length">
+        }
+        @if (recentBooks.length) {
           <div>
             <ion-grid>
               <ion-row>
-                <ion-col *ngFor="let book of recentBooks"
-                         size="4">
+                @for (book of recentBooks; track $index) {
+                <ion-col size="4">
                   <app-book [book]="book" (click)="goToBookDetails(book)"></app-book>
                 </ion-col>
+                }
               </ion-row>
             </ion-grid>
           </div>
-        </ng-container>
+        }
       </div>
 
       <div class="section">
         <div class="header">top authors</div>
-        <ng-container *ngIf="!topAuthors.length">
+        @if (!topAuthors.length) {
           <app-empty message="You have no authors"></app-empty>
-        </ng-container>
-        <ng-container *ngIf="topAuthors.length">
+        }
+        @if (topAuthors.length) {
           <div>
             <ion-grid>
               <ion-row>
-                <ion-col *ngFor="let author of topAuthors"
-                         size="4">
+                @for (author of topAuthors; track $index) {
+                <ion-col size="4">
                   <div class="recent-card">
                     <div class="name">{{ author.author.name }}</div>
                     <div class="count">{{ author.numOfBooks }}</div>
                   </div>
                 </ion-col>
+                }
               </ion-row>
             </ion-grid>
           </div>
-        </ng-container>
+        }
       </div>
 
       <div class="section">
         <div class="header">top publishers</div>
-        <ng-container *ngIf="!topPublishers.length">
+        @if (!topPublishers.length) {
           <app-empty message="You have no publishers"></app-empty>
-        </ng-container>
-        <ng-container *ngIf="topPublishers.length">
+        }
+        @if (topPublishers.length) {
           <div>
             <ion-grid>
               <ion-row>
-                <ion-col *ngFor="let publisher of topPublishers"
-                         size="4">
+                @for (publisher of topPublishers; track $index) {
+                <ion-col size="4">
                   <div class="recent-card">
                     <div class="name">{{ publisher.publisher.name }}</div>
                     <div class="count">{{ publisher.numOfBooks }}</div>
                   </div>
                 </ion-col>
+                }
               </ion-row>
             </ion-grid>
           </div>
-        </ng-container>
+        }
       </div>
     </div>
-  </ng-container>
+  }
 </ion-content>

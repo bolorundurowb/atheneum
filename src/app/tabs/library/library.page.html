@@ -10,36 +10,39 @@
       (keyup)="handleSearch($event)"></ion-searchbar>
   </div>
 
-  <div class="page-loader" *ngIf="isLoading">
+  @if (isLoading) {
+  <div class="page-loader">
     <ion-spinner name="lines-sharp"></ion-spinner>
   </div>
+  }
 
-  <ng-container *ngIf="!isLoading">
+  @if (!isLoading) {
     <ion-refresher slot="fixed" (ionRefresh)="handlePullRefresh($event)">
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
 
     <div class="ion-content-scroll-host ion-padding lib-content">
-      <ng-container *ngIf="!books.length">
+      @if (!books.length) {
         <app-empty message="You have no library items, feel free to add some!"></app-empty>
-      </ng-container>
+      }
 
-      <ng-container *ngIf="books.length">
+      @if (books.length) {
         <ion-grid>
           <ion-row>
-            <ion-col *ngFor="let book of books"
-                     size="4">
+            @for (book of books; track $index) {
+            <ion-col size="4">
               <app-book [book]="book" (click)="goToBookDetails(book)"></app-book>
             </ion-col>
+            }
           </ion-row>
         </ion-grid>
-      </ng-container>
+      }
     </div>
 
-    <ng-container *ngIf="books.length">
+    @if (books.length) {
       <ion-infinite-scroll (ionInfinite)="handleScrollEnd($event)">
         <ion-infinite-scroll-content loadingSpinner="lines-sharp"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
-    </ng-container>
-  </ng-container>
+    }
+  }
 </ion-content>

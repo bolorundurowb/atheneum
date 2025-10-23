@@ -9,32 +9,35 @@
     </button>
   </div>
 
-  <div class="page-loader" *ngIf="isLoading">
+  @if (isLoading) {
+  <div class="page-loader">
     <ion-spinner name="lines-sharp"></ion-spinner>
   </div>
+  }
 
-  <ng-container *ngIf="!isLoading">
+  @if (!isLoading) {
     <ion-refresher slot="fixed" (ionRefresh)="handlePullRefresh($event)">
       <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
 
     <div class="ion-content-scroll-host ion-padding wish-content">
-      <ng-container *ngIf="!wishlist.length">
+      @if (!wishlist.length) {
         <app-empty message="You have no wishlist items, feel free to add some!"></app-empty>
-      </ng-container>
+      }
 
-      <ng-container *ngIf="wishlist.length">
+      @if (wishlist.length) {
         <ion-grid>
           <ion-row>
-            <ion-col *ngFor="let book of wishlist"
-                     size="4">
+            @for (book of wishlist; track $index) {
+            <ion-col size="4">
               <app-book [book]="book"></app-book>
             </ion-col>
+            }
           </ion-row>
         </ion-grid>
-      </ng-container>
+      }
     </div>
-  </ng-container>
+  }
 </ion-content>
 
 <ion-modal #modal
@@ -92,12 +95,11 @@
             mode="ios"
             [disabled]="isAdding"
             (click)="addToWishlist(modal)">
-            <ng-container *ngIf="isAdding">
+            @if (isAdding) {
               <ion-spinner name="lines-sharp"></ion-spinner>
-            </ng-container>
-            <ng-container *ngIf="!isAdding">
+            } @else {
               add to list
-            </ng-container>
+            }
           </ion-button>
         </div>
       </form>

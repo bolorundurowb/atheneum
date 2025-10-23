@@ -43,12 +43,11 @@
         mode="ios"
         [disabled]="isLoggingIn"
         (click)="login()">
-        <ng-container *ngIf="isLoggingIn">
+        @if (isLoggingIn) {
           <ion-spinner name="lines-sharp"></ion-spinner>
-        </ng-container>
-        <ng-container *ngIf="!isLoggingIn">
+        } @else {
           login
-        </ng-container>
+        }
       </ion-button>
 
       <div class="join-us">

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { ActivatedRoute, Router } from '@angular/router';
 import {IonicModule} from "@ionic/angular";
@@ -22,12 +22,13 @@ interface ResetPasswordPayload {
   ]
 })
 export class ResetPasswordPage implements OnInit {
+  private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+
   isRequesting = false;
   payload: ResetPasswordPayload = {};
-
-  constructor(private authService: AuthService, private notificationService: NotificationService,
-              private router: Router, private route: ActivatedRoute) {
-  }
 
   ngOnInit() {
     this.payload.emailAddress = (this.route.snapshot.queryParams as any).email;

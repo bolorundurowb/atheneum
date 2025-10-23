@@ -133,12 +133,11 @@
             mode="ios"
             [disabled]="isAddingBook"
             (click)="addManual()">
-            <ng-container *ngIf="isAddingBook">
+            @if (isAddingBook) {
               <ion-spinner name="lines-sharp"></ion-spinner>
-            </ng-container>
-            <ng-container *ngIf="!isAddingBook">
+            } @else {
               add to library
-            </ng-container>
+            }
           </ion-button>
         </div>
       </form>
@@ -179,12 +178,11 @@
             mode="ios"
             [disabled]="isAddingBook"
             (click)="addByIsbn()">
-            <ng-container *ngIf="isAddingBook">
+            @if (isAddingBook) {
               <ion-spinner name="lines-sharp"></ion-spinner>
-            </ng-container>
-            <ng-container *ngIf="!isAddingBook">
+            } @else {
               add to library
-            </ng-container>
+            }
           </ion-button>
         </div>
       </form>

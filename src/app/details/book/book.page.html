@@ -17,9 +17,9 @@
 
       <div class="title">{{ book.title }}</div>
       <div class="authors">
-        <ng-container *ngFor="let author of book.authors">
+        @for (author of book.authors; track author.id) {
           {{ author.name }}
-        </ng-container>
+        }
       </div>
       <div class="summary">
         {{ book.summary }}
