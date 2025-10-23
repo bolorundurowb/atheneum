@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseApiUrl: 'https://atheneum-staging.herokuapp.com'
+  baseApiUrl: 'http://localhost:3000'
 };
 
 /*
