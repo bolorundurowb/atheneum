@@ -21,9 +21,8 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
-# compiled output
+# Compiled output
 dist/
-node_modules/
 
 # System files
 .DS_Store
