@@ -3,7 +3,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import * as Mailgun from 'mailgun-js';
+import Mailgun = require('mailgun-js');
 import configuration from '../../config/configuration';
 
 @Injectable()
@@ -22,7 +22,7 @@ export class EmailService {
     recipient: string,
     subject: string,
     content: string,
-    sender = 'Atheneum App <atheneum@bolorundurowb.com>',
+    sender = 'Atheneum App <atheneum@bolorundurowb.dev>',
     attachments: Array<any> = []
   ) {
     try {

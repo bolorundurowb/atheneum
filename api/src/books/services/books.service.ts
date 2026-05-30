@@ -222,7 +222,7 @@ export class BooksService {
     const book = await this.bookModel.findOne({
       owner: ownerId,
       _id: bookId
-    });
+    } as any);
 
     if (!book) {
       throw new NotFoundException(null, 'Book not found.');
@@ -250,7 +250,7 @@ export class BooksService {
     const book = await this.bookModel.findOne({
       owner: ownerId,
       _id: bookId
-    });
+    } as any);
 
     if (!book) {
       throw new NotFoundException(null, 'Book not found.');
@@ -309,7 +309,7 @@ export class BooksService {
   ): Promise<boolean> {
     const count = await this.bookModel.countDocuments({
       $and: [{ owner: ownerId }, { $or: [{ isbn }, { isbn13: isbn }] }]
-    });
+    } as any);
     return count > 0;
   }
 
