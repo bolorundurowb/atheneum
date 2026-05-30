@@ -67,15 +67,22 @@ export class AuthService {
     await (<UserDocument>user).save();
 
     // send an email to the user
-    const content = this.templateService.getWelcomeVerificationContent(
-      user.firstName,
-      verificationCode
-    );
-    await this.emailService.send(
-      user.emailAddress,
-      'Welcome to Atheneum! Verify your email.',
-      content
-    );
+    try {
+      const content = this.templateService.getWelcomeVerificationContent(
+        user.firstName,
+        verificationCode
+      );
+      await this.emailService.send(
+        user.emailAddress,
+        'Welcome to Atheneum! Verify your email.',
+        content
+      );
+    } catch (e) {
+      console.error(
+        `Failed to send verification email to ${user.emailAddress}:`,
+        e
+      );
+    }
 
     return {
       authToken: this.generateAuthToken(user),

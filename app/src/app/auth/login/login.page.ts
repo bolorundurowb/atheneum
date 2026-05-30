@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
@@ -16,7 +16,8 @@ interface LoginPayload {
   styleUrls: [ 'login.page.scss' ],
   imports: [
     IonicModule,
-    FormsModule
+    FormsModule,
+    RouterLink
   ]
 })
 export class LoginPage {
