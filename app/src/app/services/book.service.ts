@@ -32,4 +32,16 @@ export class BookService {
   removeBook(bookId: any): Promise<any> {
     return asPromise(this.http.delete<any>(`${this.baseUrl}/${bookId} `));
   }
+
+  getBook(bookId: string): Promise<any> {
+    return asPromise<any>(this.http.get<any>(`${this.baseUrl}/${bookId}`));
+  }
+
+  borrowBook(bookId: string, borrowerName: string): Promise<any> {
+    return asPromise(this.http.post<any>(`${this.baseUrl}/${bookId}/borrow`, { borrowerName }));
+  }
+
+  returnBook(bookId: string): Promise<any> {
+    return asPromise(this.http.post<any>(`${this.baseUrl}/${bookId}/return`, {}));
+  }
 }

@@ -278,6 +278,19 @@ export class BooksService {
     return book;
   }
 
+  async getById(ownerId: any, bookId: string): Promise<Book> {
+    const book = await this.bookModel
+      .findOne({ owner: ownerId, _id: bookId } as any)
+      .populate('authors', 'name')
+      .populate('publisher', 'name');
+
+    if (!book) {
+      throw new NotFoundException(null, 'Book not found.');
+    }
+
+    return book;
+  }
+
   async getRecent(ownerId: any): Promise<Array<Book>> {
     return this.bookModel
       .find({

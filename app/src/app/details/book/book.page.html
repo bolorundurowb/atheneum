@@ -41,11 +41,43 @@
         Source: <span>{{ book.source }}</span>
       </div>
       <div class="meta-row">
-        Availability: <span>{{ book.isAvailable ? 'Available' : 'Borrowed' }}</span>
+        Availability: <span>{{ book.isAvailable ? 'Available' : 'Lent Out' }}</span>
       </div>
       <div class="meta-row">
         Added At: <span>{{ book.createdAt | date: 'dd MMM \'yy HH:mmaa' }}</span>
       </div>
+
+      <!-- Lending actions -->
+      @if (book.isAvailable) {
+        <ion-button expand="block" mode="ios" (click)="openBorrowDialog()">
+          Lend Book
+        </ion-button>
+      } @else {
+        @if (currentLoan) {
+          <div class="meta-row">
+            Lent to: <span>{{ currentLoan.borrowedBy }}</span>
+          </div>
+          <div class="meta-row">
+            Since: <span>{{ currentLoan.borrowedAt | date: 'dd MMM yy' }}</span>
+          </div>
+        }
+        <ion-button expand="block" mode="ios" (click)="returnBook()">
+          Mark as Returned
+        </ion-button>
+      }
+
+      <!-- Lending history -->
+      @if (lendingHistory.length > 0) {
+        <div class="section-title">Lending History</div>
+        @for (record of lendingHistory; track record.borrowedAt) {
+          <div class="history-row">
+            <span class="history-name">{{ record.borrowedBy }}</span>
+            <span class="history-dates">
+              {{ record.borrowedAt | date: 'dd MMM yy' }} &ndash; {{ record.returnedAt | date: 'dd MMM yy' }}
+            </span>
+          </div>
+        }
+      }
     </div>
   </div>
 </ion-content>
@@ -55,3 +87,48 @@
   header="Confirm"
   message="Are you sure you want to remove this book? This action is permanent and cannot be undone!"
   [buttons]="removeButtons"></ion-alert>
+
+<ion-modal
+  id="lend-book-modal"
+  [isOpen]="isLendModalVisible"
+  [canDismiss]="canDismiss">
+  <ng-template>
+    <div class="wrapper">
+      <ion-toolbar>
+        <ion-title>lend book</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="dismissLendModal()">
+            <ion-icon slot="icon-only" name="close"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+
+      <form>
+        <div class="input-field">
+          <ion-input
+            name="borrower-name"
+            label="borrower's name"
+            fill="outline"
+            label-placement="floating"
+            type="text"
+            placeholder="borrower name"
+            [(ngModel)]="lendPayload.borrowerName"></ion-input>
+        </div>
+
+        <div class="input-field">
+          <ion-button
+            expand="block"
+            mode="ios"
+            [disabled]="isLending"
+            (click)="lendBook()">
+            @if (isLending) {
+              <ion-spinner name="lines-sharp"></ion-spinner>
+            } @else {
+              lend book
+            }
+          </ion-button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+</ion-modal>
