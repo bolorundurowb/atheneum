@@ -46,6 +46,12 @@ export class BooksController {
     return this.bookService.getRecent(userId);
   }
 
+  @Get(':bookId')
+  async getOne(@Request() req, @Param('bookId') bookId: string) {
+    const userId = req.user.id;
+    return this.bookService.getById(userId, bookId);
+  }
+
   @Post('isbn')
   async createFromIsbn(@Request() req, @Body() payload: BookIsbnDto) {
     const userId = req.user.id;
