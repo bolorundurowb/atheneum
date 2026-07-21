@@ -81,7 +81,9 @@ jobs:
 
       - name: Build Android AAB
         working-directory: app/android
-        run: ./gradlew bundleRelease
+        run: |
+          chmod +x ./gradlew
+          ./gradlew bundleRelease
 
       - name: Sign AAB
         if: env.HAS_KEYSTORE == 'true'
@@ -121,9 +123,13 @@ jobs:
         working-directory: app
         run: npx ng build --configuration production
 
-      - name: Sync Capacitor
+      - name: Copy web assets to iOS
         working-directory: app
-        run: npx cap sync ios
+        run: npx cap copy ios
+
+      - name: Bump iOS deployment target
+        working-directory: app/ios/App
+        run: sed -i '' 's/platform :ios, .*/platform :ios, "15.0"/' Podfile
 
       - name: Install CocoaPods
         working-directory: app/ios/App
