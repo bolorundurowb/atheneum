@@ -1,8 +1,5 @@
 import { Controller, Delete, Request, UseGuards } from '@nestjs/common';
-import {
-  ApiOkResponse,
-  ApiTags
-} from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { UsersService } from '../../users/services/users.service';
 import { BooksService } from '../../books/services/books.service';

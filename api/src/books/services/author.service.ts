@@ -43,7 +43,7 @@ export class AuthorService {
     });
 
     return populatedResult.map((x) => {
-      // @ts-ignore
+      // @ts-expect-error populate result type mismatch
       return { author: x._id, numOfBooks: x.numOfBooks };
     });
   }

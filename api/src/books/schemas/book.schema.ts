@@ -3,7 +3,7 @@
  */
 
 import { Prop, raw, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 import { User } from '../../users/schemas/user.schema';
 import { Author } from './author.schema';
 import { Publisher } from './publisher.schema';

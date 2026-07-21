@@ -1,6 +1,8 @@
 # Atheneum
 
-[![Play Store](https://github.com/bolorundurowb/atheneum-app/raw/master/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.bolorundurowb.atheneum)
+[![CI](https://github.com/bolorundurowb/atheneum/actions/workflows/build.yaml/badge.svg)](https://github.com/bolorundurowb/atheneum/actions/workflows/build.yaml)
+
+[![Play Store](https://github.com/bolorundurowb/atheneum/raw/master/app/google-play-badge.png)](https://play.google.com/store/apps/details?id=com.bolorundurowb.atheneum)
 
 A cross-platform mobile app for managing your personal book collection. Track what you own, who you've lent books to, and what you want to read next — all from your phone.
 

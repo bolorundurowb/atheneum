@@ -4,10 +4,7 @@ import { AccountsController } from './controllers/accounts.controller';
 import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [
-    BooksModule,
-    UsersModule,
-  ],
+  imports: [BooksModule, UsersModule],
   providers: [],
   exports: [],
   controllers: [AccountsController]

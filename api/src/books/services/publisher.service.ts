@@ -42,7 +42,7 @@ export class PublisherService {
     });
 
     return populatedResult.map((x) => {
-      // @ts-ignore
+      // @ts-expect-error populate result type mismatch
       return { publisher: x._id, numOfBooks: x.numOfBooks };
     });
   }

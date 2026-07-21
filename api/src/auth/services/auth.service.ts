@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import { TemplateService } from '../../shared/services/template.service';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
@@ -78,7 +81,7 @@ export class AuthService {
         content
       );
     } catch (e) {
-      console.error(
+      this.logger.error(
         `Failed to send verification email to ${user.emailAddress}:`,
         e
       );

@@ -3,7 +3,7 @@
  */
 
 import { Injectable, Logger } from '@nestjs/common';
-import Mailgun = require('mailgun-js');
+import Mailgun from 'mailgun-js';
 import configuration from '../../config/configuration';
 
 @Injectable()

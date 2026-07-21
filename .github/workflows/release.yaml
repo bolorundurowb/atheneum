@@ -1,0 +1,206 @@
+name: Release
+
+on:
+  push:
+    branches: [ master ]
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag_exists: ${{ steps.check.outputs.exists }}
+      last_tag: ${{ steps.last_tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - id: version
+        working-directory: app
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=v$VERSION" >> $GITHUB_OUTPUT
+
+      - id: last_tag
+        run: |
+          TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - id: check
+        shell: bash
+        run: |
+          if git rev-parse "${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag ${{ steps.version.outputs.version }} already exists. Skipping release."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Proceeding with release ${{ steps.version.outputs.version }}"
+          fi
+
+  build-android:
+    needs: check
+    if: needs.check.outputs.tag_exists == 'false'
+    runs-on: ubuntu-latest
+    env:
+      HAS_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - run: npm ci
+        working-directory: app
+
+      - name: Build web app
+        working-directory: app
+        run: npx ng build --configuration production
+
+      - name: Add Android platform
+        working-directory: app
+        run: npx cap add android
+
+      - name: Sync Capacitor
+        working-directory: app
+        run: npx cap sync android
+
+      - name: Build Android AAB
+        working-directory: app/android
+        run: ./gradlew bundleRelease
+
+      - name: Sign AAB
+        if: env.HAS_KEYSTORE == 'true'
+        uses: r0adkll/sign-android-release@v1
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        with:
+          releaseDirectory: app/android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          alias: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-release
+          path: app/android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: warn
+
+  build-ios:
+    needs: check
+    if: needs.check.outputs.tag_exists == 'false'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - run: npm ci
+        working-directory: app
+
+      - name: Build web app
+        working-directory: app
+        run: npx ng build --configuration production
+
+      - name: Add iOS platform
+        working-directory: app
+        run: npx cap add ios
+
+      - name: Sync Capacitor
+        working-directory: app
+        run: npx cap sync ios
+
+      - name: Install CocoaPods
+        working-directory: app/ios/App
+        run: pod install
+
+      - name: Build iOS archive
+        working-directory: app/ios
+        run: |
+          xcodebuild -workspace App.xcworkspace \
+            -scheme App \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath "$PWD/build/App.xcarchive" \
+            archive \
+            CODE_SIGNING_ALLOWED=NO
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ios-release
+          path: app/ios/build/App.xcarchive
+          if-no-files-found: warn
+
+  release:
+    needs: [check, build-android, build-ios]
+    if: |
+      needs.check.outputs.tag_exists == 'false' &&
+      !cancelled()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate changelog
+        shell: bash
+        run: |
+          LAST_TAG="${{ needs.check.outputs.last_tag }}"
+          {
+            if [ -z "$LAST_TAG" ]; then
+              echo "## Changes"
+              echo ""
+              git log --oneline --no-merges | sed 's/^/- /'
+            else
+              echo "## Changes since $LAST_TAG"
+              echo ""
+              git log --oneline --no-merges "$LAST_TAG..HEAD" | sed 's/^/- /'
+            fi
+          } > CHANGELOG.md
+          cat CHANGELOG.md
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: List artifacts
+        run: find artifacts -type f
+
+      - name: Create tag
+        run: |
+          git tag "${{ needs.check.outputs.version }}"
+          git push origin "${{ needs.check.outputs.version }}"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.check.outputs.version }}
+          body_path: CHANGELOG.md
+          files: artifacts/**/*
+          fail_on_unmatched_files: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

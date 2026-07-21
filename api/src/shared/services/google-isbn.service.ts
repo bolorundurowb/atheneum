@@ -57,7 +57,7 @@ export class GoogleIsbnService {
           status,
           code,
           statusText: response?.statusText,
-          internalError: response?.data?.error?.message,
+          internalError: response?.data?.error?.message
         }
       );
 
