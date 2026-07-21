@@ -83,3 +83,52 @@
     }
   }
 }
+
+.body {
+  ion-button {
+    margin-top: 20px;
+  }
+
+  .section-title {
+    font-family: proximabold !important;
+    font-size: 16px;
+    margin-top: 24px;
+    margin-bottom: 8px;
+    color: #111111;
+  }
+
+  .history-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #EEEEEE;
+    font-size: 14px;
+
+    .history-name {
+      font-weight: bold;
+      color: #333333;
+    }
+
+    .history-dates {
+      color: #6C6C6C;
+      font-size: 12px;
+    }
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .body {
+    .section-title {
+      color: #FDFDFD;
+    }
+
+    .history-row {
+      border-bottom-color: #2C2C2C;
+
+      .history-name {
+        color: #DDDDDD;
+      }
+    }
+  }
+}
