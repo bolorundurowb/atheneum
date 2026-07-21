@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import configuration from './config/configuration';
 
 async function bootstrap() {
@@ -30,4 +30,7 @@ async function bootstrap() {
   await app.listen(configuration().port);
 }
 
-bootstrap().then(() => console.log('API bootstrapped'));
+const logger = new Logger('Bootstrap');
+bootstrap()
+  .then(() => logger.log('API bootstrapped'))
+  .catch((err) => logger.error('Failed to bootstrap API', err));

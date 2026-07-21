@@ -75,10 +75,6 @@ jobs:
         working-directory: app
         run: npx ng build --configuration production
 
-      - name: Add Android platform
-        working-directory: app
-        run: npx cap add android
-
       - name: Sync Capacitor
         working-directory: app
         run: npx cap sync android
@@ -124,10 +120,6 @@ jobs:
       - name: Build web app
         working-directory: app
         run: npx ng build --configuration production
-
-      - name: Add iOS platform
-        working-directory: app
-        run: npx cap add ios
 
       - name: Sync Capacitor
         working-directory: app
