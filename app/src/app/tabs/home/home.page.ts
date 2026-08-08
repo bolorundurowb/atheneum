@@ -7,7 +7,7 @@ import {
   PublisherService,
   StatisticService
 } from '../../services';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonCol, IonContent, IonGrid, IonRow, IonSpinner, NavController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { EmptyComponent } from '../../shared/empty/empty.component';
 import { BookComponent } from '../../shared/book/book.component';
@@ -18,7 +18,11 @@ import { BookComponent } from '../../shared/book/book.component';
   templateUrl: 'home.page.html',
   styleUrls: [ 'home.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonSpinner,
     FormsModule,
     BookComponent,
     EmptyComponent

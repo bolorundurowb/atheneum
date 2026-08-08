@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonButton, IonContent, IonInput, IonLabel, IonSpinner, NavController } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
 interface ForgotPasswordPayload {
@@ -13,7 +13,11 @@ interface ForgotPasswordPayload {
   templateUrl: 'forgot-password.page.html',
   styleUrls: [ 'forgot-password.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonSpinner,
     FormsModule
   ]
 })

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonRouterOutlet } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-details',
@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
   templateUrl: 'book-details-page.component.html',
   styleUrl: 'book-details-page.component.scss',
   imports: [
-    IonicModule
+    IonRouterOutlet
   ]
 })
 export class BookDetailsPage {

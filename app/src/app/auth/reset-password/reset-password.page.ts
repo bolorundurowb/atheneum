@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { ActivatedRoute, Router } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonButton, IonContent, IonInput, IonLabel, IonSpinner } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
 interface ResetPasswordPayload {
@@ -17,7 +17,11 @@ interface ResetPasswordPayload {
   templateUrl: 'reset-password.page.html',
   styleUrls: [ 'reset-password.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonSpinner,
     FormsModule
   ]
 })

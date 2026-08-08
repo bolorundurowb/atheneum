@@ -1,6 +1,20 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BookService, NotificationService } from '../../services';
-import { InfiniteScrollCustomEvent, IonicModule, NavController } from '@ionic/angular';
+import {
+  InfiniteScrollCustomEvent,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  IonLabel,
+  IonRefresher,
+  IonRefresherContent,
+  IonRow,
+  IonSearchbar,
+  IonSpinner,
+  NavController
+} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { BookComponent } from '../../shared/book/book.component';
 import { EmptyComponent } from '../../shared/empty/empty.component';
@@ -11,7 +25,17 @@ import { EmptyComponent } from '../../shared/empty/empty.component';
   templateUrl: 'library.page.html',
   styleUrls: [ 'library.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonSearchbar,
+    IonRefresher,
+    IonRefresherContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonLabel,
+    IonInfiniteScroll,
+    IonInfiniteScrollContent,
+    IonSpinner,
     FormsModule,
     BookComponent,
     EmptyComponent

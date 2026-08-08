@@ -4,7 +4,17 @@ import { Router } from '@angular/router';
 
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
-import { IonicModule } from '@ionic/angular';
+import {
+  IonAccordion,
+  IonAccordionGroup,
+  IonAlert,
+  IonButton,
+  IonContent,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonSpinner
+} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
 interface UpdateProfilePayload {
@@ -26,7 +36,15 @@ interface ChangePasswordPayload {
   templateUrl: 'settings.page.html',
   styleUrls: [ 'settings.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonAccordionGroup,
+    IonAccordion,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonAlert,
+    IonSpinner,
     FormsModule
   ]
 })

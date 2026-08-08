@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { IonicModule } from '@ionic/angular';
+import { IonButton, IonContent, IonIcon, IonInput, IonLabel, IonSpinner } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
 interface RegisterPayload {
@@ -18,7 +18,12 @@ interface RegisterPayload {
   templateUrl: 'register.page.html',
   styleUrls: [ 'register.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonIcon,
+    IonSpinner,
     FormsModule
   ]
 })

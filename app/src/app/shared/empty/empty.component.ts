@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { fileTrayOutline } from 'ionicons/icons';
 
 @Component ({
   selector: 'app-empty',
@@ -17,4 +19,8 @@ import { IonIcon } from '@ionic/angular/standalone';
 })
 export class EmptyComponent {
   @Input() message!: string;
+
+  constructor() {
+    addIcons({ fileTrayOutline });
+  }
 }
