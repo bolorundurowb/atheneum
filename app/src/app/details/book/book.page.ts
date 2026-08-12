@@ -11,7 +11,9 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
-  NavController
+  NavController,
+  IonRefresher,
+  IonRefresherContent
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { BookService, NotificationService } from '../../services';
@@ -41,7 +43,9 @@ interface LendBookPayload {
     IonAlert,
     IonSpinner,
     FormsModule,
-    DatePipe
+    DatePipe,
+    IonRefresher,
+    IonRefresherContent
   ]
 })
 export class BookPage implements OnInit {
@@ -81,6 +85,19 @@ export class BookPage implements OnInit {
 
   ngOnInit() {
     this.book = JSON.parse((this.route.snapshot.queryParams as any).book);
+  }
+
+  async loadData() {
+    try {
+      this.book = await this.bookService.getBook(this.book._id);
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    }
+  }
+
+  async handleRefresh(event: any) {
+    await this.loadData();
+    event.target.complete();
   }
 
   async goBack() {

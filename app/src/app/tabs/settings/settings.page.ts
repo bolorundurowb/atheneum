@@ -13,7 +13,9 @@ import {
   IonInput,
   IonItem,
   IonLabel,
-  IonSpinner
+  IonSpinner,
+  IonRefresher,
+  IonRefresherContent
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
@@ -45,7 +47,9 @@ interface ChangePasswordPayload {
     IonButton,
     IonAlert,
     IonSpinner,
-    FormsModule
+    FormsModule,
+    IonRefresher,
+    IonRefresherContent
   ]
 })
 export class SettingsPage implements OnInit {
@@ -96,7 +100,7 @@ export class SettingsPage implements OnInit {
   isChangingPassword = false;
   changePayload: ChangePasswordPayload = {};
 
-  async ngOnInit() {
+  async loadData() {
     this.appVersion = await this.getAppVersion();
 
     const currentUser = this.authService.getUser();
@@ -106,6 +110,20 @@ export class SettingsPage implements OnInit {
     const profile = await this.userService.getProfile();
     this.setUser(profile);
     this.authService.persistUser({ ...currentUser, ...profile });
+  }
+
+  async ngOnInit() {
+    await this.loadData();
+  }
+
+  async handleRefresh(event: any) {
+    try {
+      await this.loadData();
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    } finally {
+      event.target.complete();
+    }
   }
 
   async getAppVersion(): Promise<string | undefined> {
