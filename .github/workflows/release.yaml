@@ -90,6 +90,7 @@ jobs:
         uses: r0adkll/sign-android-release@v1
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          BUILD_TOOLS_VERSION: "36.0.0"
         with:
           releaseDirectory: app/android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
