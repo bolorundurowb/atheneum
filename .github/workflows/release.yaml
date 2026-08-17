@@ -79,19 +79,19 @@ jobs:
         working-directory: app
         run: npx cap sync android
 
-      - name: Build Android AAB
+      - name: Build Android APK
         working-directory: app/android
         run: |
           chmod +x ./gradlew
-          ./gradlew bundleRelease
+          ./gradlew assembleRelease
 
-      - name: Sign AAB
+      - name: Sign APK
         if: env.HAS_KEYSTORE == 'true'
         uses: r0adkll/sign-android-release@v1
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         with:
-          releaseDirectory: app/android/app/build/outputs/bundle/release
+          releaseDirectory: app/android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           alias: ${{ secrets.ANDROID_KEYSTORE_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -100,60 +100,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: android-release
-          path: app/android/app/build/outputs/bundle/release/*.aab
-          if-no-files-found: warn
-
-  build-ios:
-    needs: check
-    if: needs.check.outputs.tag_exists == 'false'
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: app/package-lock.json
-
-      - run: npm ci
-        working-directory: app
-
-      - name: Build web app
-        working-directory: app
-        run: npx ng build --configuration production
-
-      - name: Copy web assets to iOS
-        working-directory: app
-        run: npx cap copy ios
-
-      - name: Bump iOS deployment target
-        working-directory: app/ios/App
-        run: sed -i '' 's/platform :ios, .*/platform :ios, "15.0"/' Podfile
-
-      - name: Install CocoaPods
-        working-directory: app/ios/App
-        run: pod install
-
-      - name: Build iOS archive
-        working-directory: app/ios
-        run: |
-          xcodebuild -workspace App.xcworkspace \
-            -scheme App \
-            -sdk iphoneos \
-            -configuration Release \
-            -archivePath "$PWD/build/App.xcarchive" \
-            archive \
-            CODE_SIGNING_ALLOWED=NO
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ios-release
-          path: app/ios/build/App.xcarchive
+          path: app/android/app/build/outputs/apk/release/*.apk
           if-no-files-found: warn
 
   release:
-    needs: [check, build-android, build-ios]
+    needs: [check, build-android]
     if: |
       needs.check.outputs.tag_exists == 'false' &&
       !cancelled()
