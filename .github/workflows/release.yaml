@@ -87,6 +87,7 @@ jobs:
 
       - name: Sign APK
         if: env.HAS_KEYSTORE == 'true'
+        id: sign_apk
         uses: r0adkll/sign-android-release@v1
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -98,11 +99,18 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
+      - name: Rename signed APK for release
+        if: env.HAS_KEYSTORE == 'true'
+        run: |
+          mkdir -p app/android/app/build/outputs/apk/dist
+          cp "${{ steps.sign_apk.outputs.signedReleaseFile }}" \
+            "app/android/app/build/outputs/apk/dist/atheneum-app-${{ needs.check.outputs.version }}.apk"
+
       - uses: actions/upload-artifact@v4
         with:
           name: android-release
-          path: app/android/app/build/outputs/apk/release/*.apk
-          if-no-files-found: warn
+          path: app/android/app/build/outputs/apk/dist/*.apk
+          if-no-files-found: error
 
   release:
     needs: [check, build-android]
@@ -150,7 +158,7 @@ jobs:
         with:
           tag_name: ${{ needs.check.outputs.version }}
           body_path: CHANGELOG.md
-          files: artifacts/**/*
+          files: artifacts/**/*.apk
           fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
