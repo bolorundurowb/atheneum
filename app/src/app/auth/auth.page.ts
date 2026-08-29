@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonRouterOutlet } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-auth',
@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
   templateUrl: 'auth.page.html',
   styleUrls: [ 'auth.page.scss' ],
   imports: [
-    IonicModule
+    IonRouterOutlet
   ]
 })
 export class AuthPage {

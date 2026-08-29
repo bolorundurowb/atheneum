@@ -1,10 +1,26 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IonicModule, NavController } from '@ionic/angular';
+import {
+  IonAlert,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonIcon,
+  IonInput,
+  IonModal,
+  IonSpinner,
+  IonTitle,
+  IonToolbar,
+  NavController,
+  IonRefresher,
+  IonRefresherContent
+} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { BookService, NotificationService } from '../../services';
 import { convertToHttps } from '../../utils';
 import { DatePipe } from '@angular/common';
+import { addIcons } from 'ionicons';
+import { close } from 'ionicons/icons';
 
 interface LendBookPayload {
   borrowerName?: string;
@@ -16,9 +32,20 @@ interface LendBookPayload {
   templateUrl: 'book.page.html',
   styleUrl: 'book.page.scss',
   imports: [
-    IonicModule,
+    IonContent,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonInput,
+    IonModal,
+    IonAlert,
+    IonSpinner,
     FormsModule,
-    DatePipe
+    DatePipe,
+    IonRefresher,
+    IonRefresherContent
   ]
 })
 export class BookPage implements OnInit {
@@ -52,8 +79,25 @@ export class BookPage implements OnInit {
 
   protected readonly convertToHttps = convertToHttps;
 
+  constructor() {
+    addIcons({ close });
+  }
+
   ngOnInit() {
     this.book = JSON.parse((this.route.snapshot.queryParams as any).book);
+  }
+
+  async loadData() {
+    try {
+      this.book = await this.bookService.getBook(this.book._id);
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    }
+  }
+
+  async handleRefresh(event: any) {
+    await this.loadData();
+    event.target.complete();
   }
 
   async goBack() {

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonButton, IonContent, IonInput, IonLabel, IonSpinner } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
 interface VerificationPayload {
@@ -14,7 +14,11 @@ interface VerificationPayload {
   templateUrl: 'verify.page.html',
   styleUrls: [ 'verify.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonSpinner,
     FormsModule
   ]
 })

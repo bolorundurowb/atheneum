@@ -4,7 +4,19 @@ import { Router } from '@angular/router';
 
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
-import { IonicModule } from '@ionic/angular';
+import {
+  IonAccordion,
+  IonAccordionGroup,
+  IonAlert,
+  IonButton,
+  IonContent,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonSpinner,
+  IonRefresher,
+  IonRefresherContent
+} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 
 interface UpdateProfilePayload {
@@ -26,8 +38,18 @@ interface ChangePasswordPayload {
   templateUrl: 'settings.page.html',
   styleUrls: [ 'settings.page.scss' ],
   imports: [
-    IonicModule,
-    FormsModule
+    IonContent,
+    IonAccordionGroup,
+    IonAccordion,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonButton,
+    IonAlert,
+    IonSpinner,
+    FormsModule,
+    IonRefresher,
+    IonRefresherContent
   ]
 })
 export class SettingsPage implements OnInit {
@@ -78,7 +100,7 @@ export class SettingsPage implements OnInit {
   isChangingPassword = false;
   changePayload: ChangePasswordPayload = {};
 
-  async ngOnInit() {
+  async loadData() {
     this.appVersion = await this.getAppVersion();
 
     const currentUser = this.authService.getUser();
@@ -88,6 +110,20 @@ export class SettingsPage implements OnInit {
     const profile = await this.userService.getProfile();
     this.setUser(profile);
     this.authService.persistUser({ ...currentUser, ...profile });
+  }
+
+  async ngOnInit() {
+    await this.loadData();
+  }
+
+  async handleRefresh(event: any) {
+    try {
+      await this.loadData();
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    } finally {
+      event.target.complete();
+    }
   }
 
   async getAppVersion(): Promise<string | undefined> {

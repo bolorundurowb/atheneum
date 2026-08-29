@@ -3,7 +3,25 @@ import { NotificationService, WishlistService } from '../../services';
 import { FormsModule } from '@angular/forms';
 import { BookComponent } from '../../shared/book/book.component';
 import { EmptyComponent } from '../../shared/empty/empty.component';
-import { IonicModule } from '@ionic/angular';
+import {
+  IonButton,
+  IonButtons,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonInput,
+  IonLabel,
+  IonModal,
+  IonRefresher,
+  IonRefresherContent,
+  IonRow,
+  IonSpinner,
+  IonTitle,
+  IonToolbar
+} from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { close } from 'ionicons/icons';
 
 interface AddToWishlistPayload {
   bookTitle?: string;
@@ -18,7 +36,21 @@ interface AddToWishlistPayload {
   styleUrls: [ 'wishlist.page.scss' ],
   imports: [
     FormsModule,
-    IonicModule,
+    IonContent,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonInput,
+    IonLabel,
+    IonModal,
+    IonRefresher,
+    IonRefresherContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonSpinner,
     BookComponent,
     EmptyComponent
   ]
@@ -32,6 +64,10 @@ export class WishlistPage implements OnInit {
 
   isAdding: boolean = false;
   addPayload: AddToWishlistPayload = {};
+
+  constructor() {
+    addIcons({ close });
+  }
 
   async ngOnInit() {
     this.isLoading = true;

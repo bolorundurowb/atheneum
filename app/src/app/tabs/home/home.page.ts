@@ -7,7 +7,7 @@ import {
   PublisherService,
   StatisticService
 } from '../../services';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonCol, IonContent, IonGrid, IonRow, IonSpinner, NavController, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
 import { EmptyComponent } from '../../shared/empty/empty.component';
 import { BookComponent } from '../../shared/book/book.component';
@@ -18,10 +18,16 @@ import { BookComponent } from '../../shared/book/book.component';
   templateUrl: 'home.page.html',
   styleUrls: [ 'home.page.scss' ],
   imports: [
-    IonicModule,
+    IonContent,
+    IonGrid,
+    IonRow,
+    IonCol,
+    IonSpinner,
     FormsModule,
     BookComponent,
-    EmptyComponent
+    EmptyComponent,
+    IonRefresher,
+    IonRefresherContent
   ]
 })
 export class HomePage implements OnInit {
@@ -40,9 +46,7 @@ export class HomePage implements OnInit {
   topAuthors: any[] = [];
   topPublishers: any[] = [];
 
-  async ngOnInit() {
-    this.isLoading = true;
-
+  async loadData() {
     try {
       this.stats = await this.statService.get();
       this.currentUser = this.authService.getUser();
@@ -51,9 +55,18 @@ export class HomePage implements OnInit {
       this.topPublishers = await this.publisherService.getTop();
     } catch (e) {
       await this.notificationService.error(e as string);
-    } finally {
-      this.isLoading = false;
     }
+  }
+
+  async ngOnInit() {
+    this.isLoading = true;
+    await this.loadData();
+    this.isLoading = false;
+  }
+
+  async handleRefresh(event: any) {
+    await this.loadData();
+    event.target.complete();
   }
 
   async goToBookDetails(book: any) {

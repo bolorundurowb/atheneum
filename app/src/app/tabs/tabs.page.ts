@@ -1,8 +1,26 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BookService, NotificationService } from '../services';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
-import { AlertController, IonicModule } from '@ionic/angular';
+import {
+  AlertController,
+  IonActionSheet,
+  IonButton,
+  IonButtons,
+  IonIcon,
+  IonInput,
+  IonLabel,
+  IonModal,
+  IonSpinner,
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+  IonTextarea,
+  IonTitle,
+  IonToolbar
+} from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { close } from 'ionicons/icons';
 
 export interface ManualBookPayload {
   title?: string;
@@ -24,7 +42,20 @@ export interface ManualIsbnPayload {
   templateUrl: 'tabs.page.html',
   styleUrls: [ 'tabs.page.scss' ],
   imports: [
-    IonicModule,
+    IonTabs,
+    IonTabBar,
+    IonTabButton,
+    IonToolbar,
+    IonTitle,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonLabel,
+    IonInput,
+    IonTextarea,
+    IonModal,
+    IonActionSheet,
+    IonSpinner,
     FormsModule
   ]
 })
@@ -79,6 +110,10 @@ export class TabsPage implements OnInit {
   isbnPayload: ManualIsbnPayload = {};
 
   isBarcodeScanningSupported = false;
+
+  constructor() {
+    addIcons({ close });
+  }
 
   async ngOnInit() {
     const result = await BarcodeScanner.isSupported();
