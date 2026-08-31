@@ -48,6 +48,10 @@ export class BooksService {
       query.authors = qm.authorId;
     }
 
+    if (qm.publishYear) {
+      query.publishYear = qm.publishYear;
+    }
+
     if (qm.search) {
       const caseInsensitiveSearch = {
         $regex: new RegExp(qm.search, 'i')

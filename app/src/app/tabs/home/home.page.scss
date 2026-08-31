@@ -9,7 +9,7 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding-top: 10px;
+  padding-top: calc(10px + env(safe-area-inset-top, 0px));
   background-color: #FFFFFF;
 
   .page-title {
@@ -32,7 +32,7 @@
 }
 
 .home-page-content {
-  margin: 100px 10px 30px;
+  margin: calc(100px + env(safe-area-inset-top, 0px)) 10px 30px;
 
   .section {
     padding: 5px;

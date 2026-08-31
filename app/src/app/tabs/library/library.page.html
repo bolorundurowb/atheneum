@@ -8,6 +8,40 @@
       show-clear-button="never"
       [(ngModel)]="search"
       (keyup)="handleSearch($event)"></ion-searchbar>
+
+    <div class="filters">
+      <ion-select
+        [(ngModel)]="authorId"
+        (ionChange)="handleFilter()"
+        interface="action-sheet"
+        placeholder="author"
+        class="filter">
+        <ion-select-option value="">all authors</ion-select-option>
+        @for (author of authors; track author._id) {
+        <ion-select-option [value]="author._id">{{ author.name }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-select
+        [(ngModel)]="publisherId"
+        (ionChange)="handleFilter()"
+        interface="action-sheet"
+        placeholder="publisher"
+        class="filter">
+        <ion-select-option value="">all publishers</ion-select-option>
+        @for (publisher of publishers; track publisher._id) {
+        <ion-select-option [value]="publisher._id">{{ publisher.name }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-input
+        class="filter year"
+        type="number"
+        inputmode="numeric"
+        placeholder="year"
+        [(ngModel)]="yearFilter"
+        (ionChange)="handleFilter()"></ion-input>
+    </div>
   </div>
 
   @if (isLoading) {

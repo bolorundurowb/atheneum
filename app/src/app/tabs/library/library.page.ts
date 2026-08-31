@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { BookService, NotificationService } from '../../services';
+import { AuthorService, BookService, NotificationService, PublisherService } from '../../services';
 import {
   InfiniteScrollCustomEvent,
   IonCol,
@@ -7,11 +7,14 @@ import {
   IonGrid,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
+  IonInput,
   IonLabel,
   IonRefresher,
   IonRefresherContent,
   IonRow,
   IonSearchbar,
+  IonSelect,
+  IonSelectOption,
   IonSpinner,
   NavController
 } from '@ionic/angular/standalone';
@@ -27,6 +30,8 @@ import { EmptyComponent } from '../../shared/empty/empty.component';
   imports: [
     IonContent,
     IonSearchbar,
+    IonSelect,
+    IonSelectOption,
     IonRefresher,
     IonRefresherContent,
     IonGrid,
@@ -35,6 +40,7 @@ import { EmptyComponent } from '../../shared/empty/empty.component';
     IonLabel,
     IonInfiniteScroll,
     IonInfiniteScrollContent,
+    IonInput,
     IonSpinner,
     FormsModule,
     BookComponent,
@@ -43,13 +49,21 @@ import { EmptyComponent } from '../../shared/empty/empty.component';
 })
 export class LibraryPage implements OnInit {
   private bookService = inject(BookService);
+  private authorService = inject(AuthorService);
+  private publisherService = inject(PublisherService);
   private notificationService = inject(NotificationService);
   private navCtrl = inject(NavController);
 
   isLoading = false;
   books: any[] = [];
 
+  authors: any[] = [];
+  publishers: any[] = [];
+
   search?: string;
+  authorId?: string;
+  publisherId?: string;
+  yearFilter?: string;
   currentPage = 1;
   limit = 50;
 
@@ -57,7 +71,9 @@ export class LibraryPage implements OnInit {
     this.isLoading = true;
 
     try {
-      this.books = await this.bookService.getAll();
+      this.books = await this.fetchBooks(this.getSkip(), this.limit);
+      this.authors = await this.authorService.getAll();
+      this.publishers = await this.publisherService.getAll();
     } catch (e) {
       await this.notificationService.error(e as string);
     } finally {
@@ -74,7 +90,7 @@ export class LibraryPage implements OnInit {
     const skip = this.getSkip();
 
     try {
-      this.books = await this.bookService.getAll(skip, this.limit, this.search);
+      this.books = await this.fetchBooks(skip, this.limit);
     } catch (e) {
       await this.notificationService.error(e as string);
     } finally {
@@ -90,7 +106,7 @@ export class LibraryPage implements OnInit {
       } else {
         this.currentPage += 1;
         const skip = this.getSkip();
-        const books = await this.bookService.getAll(skip, this.limit, this.search);
+        const books = await this.fetchBooks(skip, this.limit);
         this.books = [ ...this.books, ...books ];
       }
     } catch (e) {
@@ -109,12 +125,39 @@ export class LibraryPage implements OnInit {
     const skip = this.getSkip();
 
     try {
-      this.books = await this.bookService.getAll(skip, this.limit, this.search);
+      this.books = await this.fetchBooks(skip, this.limit);
     } catch (e) {
       await this.notificationService.error(e as string);
     } finally {
       this.isLoading = false;
     }
+  }
+
+  async handleFilter() {
+    this.books = [];
+    this.isLoading = true;
+    this.currentPage = 1;
+    const skip = this.getSkip();
+
+    try {
+      this.books = await this.fetchBooks(skip, this.limit);
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  fetchBooks(skip: number, limit: number) {
+    const publishYear = this.yearFilter ? Number(this.yearFilter) : undefined;
+    return this.bookService.getAll(
+      skip,
+      limit,
+      this.search,
+      this.publisherId,
+      this.authorId,
+      publishYear
+    );
   }
 
   getSkip() {

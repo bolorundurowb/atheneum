@@ -16,4 +16,8 @@ export class AuthorService {
   getTop(): Promise<any[]> {
     return asPromise<any[]>(this.http.get<any>(`${this.baseUrl}/top`));
   }
+
+  getAll(): Promise<any[]> {
+    return asPromise<any[]>(this.http.get<any>(this.baseUrl));
+  }
 }
