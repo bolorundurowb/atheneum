@@ -5,9 +5,12 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { BookInfoDto } from '../../books/dtos/book-info.dto';
+import { IsbnProvider } from './isbn-provider.interface';
 
 @Injectable()
-export class OpenLibraryIsbnService {
+export class OpenLibraryIsbnService implements IsbnProvider {
+  readonly name = 'Open Library';
+
   private readonly baseUrl = 'https://openlibrary.org';
   private readonly baseIsbnUrl = `${this.baseUrl}/isbn`;
   private readonly baseCoverUrl = 'https://covers.openlibrary.org/b/id/';
