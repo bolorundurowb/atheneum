@@ -31,4 +31,9 @@ export class BookQueryDto {
   @ApiProperty()
   @IsOptional()
   authorId?: string;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsInt()
+  publishYear?: number;
 }
