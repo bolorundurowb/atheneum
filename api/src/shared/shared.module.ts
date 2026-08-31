@@ -10,6 +10,8 @@ import { TemplateService } from './services/template.service';
 import { IsbnService } from './services/isbn.service';
 import { GoogleIsbnService } from './services/google-isbn.service';
 import { OpenLibraryIsbnService } from './services/open-library-isbn.service';
+import { ArchiveIsbnService } from './services/archive-isbn.service';
+import { WikidataIsbnService } from './services/wikidata-isbn.service';
 
 @Module({
   providers: [
@@ -18,7 +20,9 @@ import { OpenLibraryIsbnService } from './services/open-library-isbn.service';
     TemplateService,
     IsbnService,
     GoogleIsbnService,
-    OpenLibraryIsbnService
+    OpenLibraryIsbnService,
+    ArchiveIsbnService,
+    WikidataIsbnService
   ],
   exports: [EmailService, CodeService, TemplateService, IsbnService],
   imports: [HttpModule]
