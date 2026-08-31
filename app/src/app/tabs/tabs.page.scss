@@ -28,6 +28,26 @@ ion-label {
   font-size: 13px;
 }
 
+ion-modal#isbn-lookup-modal {
+  --width: fit-content;
+  --min-width: 220px;
+  --height: fit-content;
+  --border-radius: 12px;
+
+  .lookup-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 24px;
+
+    .lookup-text {
+      font-size: 15px;
+      color: #363636;
+    }
+  }
+}
+
 
 @media (prefers-color-scheme: dark) {
   ion-tab-bar {
