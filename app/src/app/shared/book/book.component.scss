@@ -4,6 +4,12 @@
   border-radius: 10px;
   box-shadow: 0 0 2px grey;
   background-color: #F9F9F9;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
 
   img {
     border-top-left-radius: 10px;

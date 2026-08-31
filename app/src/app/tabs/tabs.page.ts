@@ -1,6 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { BookService, NotificationService } from '../services';
 import { BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Script, TextRecognition } from '@capacitor-mlkit/text-recognition';
+import { Capacitor } from '@capacitor/core';
 import {
   AlertController,
   IonActionSheet,
@@ -72,6 +75,15 @@ export class TabsPage implements OnInit {
       },
       handler: async () => {
         await this.addByScannedIsbn();
+      }
+    },
+    {
+      text: 'scan book (OCR)',
+      data: {
+        action: 'ocr',
+      },
+      handler: async () => {
+        await this.addByOcr();
       }
     },
     {
@@ -195,6 +207,119 @@ export class TabsPage implements OnInit {
         await this.notificationService.error(e as string);
       }
     }
+  }
+
+  async addByOcr() {
+    if (!Capacitor.isNativePlatform()) {
+      await this.notificationService.warn('OCR is only available on the mobile app');
+      return;
+    }
+
+    try {
+      const image = await Camera.getPhoto({
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera,
+        quality: 90
+      });
+
+      if (!image.path) {
+        await this.notificationService.warn('No image was captured');
+        return;
+      }
+
+      const { text } = await TextRecognition.processImage({
+        path: image.path,
+        script: Script.Latin
+      });
+
+      if (!text?.trim()) {
+        await this.notificationService.warn('No text was recognized, please try again');
+        return;
+      }
+
+      this.prefillManualPayloadFromOcr(text);
+      this.isManualBookModalVisible = true;
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    }
+  }
+
+  private prefillManualPayloadFromOcr(text: string) {
+    const lines = text
+      .split(/\r?\n/)
+      .map((x) => x.trim())
+      .filter((x) => x);
+
+    const isbn = this.extractIsbn(lines);
+
+    this.manualPayload = {
+      title: this.extractTitle(lines, isbn),
+      authors: this.extractAuthors(lines),
+      isbn,
+      publishYear: this.extractYear(lines)
+    };
+  }
+
+  private extractIsbn(lines: string[]): string | undefined {
+    for (const line of lines) {
+      const normalized = line.replace(/[-\s]/g, '').toUpperCase();
+      const match = normalized.match(/(97[89]\d{10})/);
+
+      if (match) {
+        return match[1];
+      }
+    }
+
+    for (const line of lines) {
+      const normalized = line.replace(/[-\s]/g, '').toUpperCase();
+      const match = normalized.match(/(\d{9}[\dX])/);
+
+      if (match) {
+        return match[1];
+      }
+    }
+
+    return undefined;
+  }
+
+  private extractTitle(lines: string[], isbn?: string): string | undefined {
+    const candidates = lines.filter((line) => {
+      const normalized = line.replace(/[-\s]/g, '').toUpperCase();
+
+      if (isbn && normalized === isbn) {
+        return false;
+      }
+
+      if (/^\d+$/.test(normalized)) {
+        return false;
+      }
+
+      if (/^by\s+/i.test(line)) {
+        return false;
+      }
+
+      return true;
+    });
+
+    return candidates.sort((a, b) => b.length - a.length)[0];
+  }
+
+  private extractAuthors(lines: string[]): string | undefined {
+    const byLine = lines.find((line) => /^by\s+/i.test(line.trim()));
+
+    return byLine ? byLine.replace(/^by\s+/i, '').trim() : undefined;
+  }
+
+  private extractYear(lines: string[]): number | undefined {
+    for (const line of lines) {
+      const match = line.match(/\b(19|20)\d{2}\b/);
+
+      if (match) {
+        return Number(match[0]);
+      }
+    }
+
+    return undefined;
   }
 
   private async lookupAndAddBook(isbn: string) {

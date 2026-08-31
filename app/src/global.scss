@@ -82,6 +82,11 @@ ion-toast.warn-toast {
 ion-button {
   --color: #FDFDFD;
   --background: #111111;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
 
   &.inverted {
     --color: #111111;
