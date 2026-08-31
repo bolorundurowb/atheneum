@@ -1,6 +1,6 @@
 .page-loader {
   text-align: center;
-  padding-top: 135px;
+  padding-top: calc(190px + env(safe-area-inset-top, 0px));
 }
 
 .page-header {
@@ -9,7 +9,7 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding-top: 10px;
+  padding-top: calc(10px + env(safe-area-inset-top, 0px));
   background-color: #FFFFFF;
 }
 
@@ -22,14 +22,40 @@ ion-searchbar {
   margin-bottom: 5px;
 }
 
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 8px;
+
+  ion-select,
+  ion-input.filter {
+    flex: 1;
+    min-height: 42px;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    --padding-start: 10px;
+    --padding-end: 10px;
+    font-size: 14px;
+    margin-top: 0;
+  }
+}
+
 .lib-content {
-  padding-top: 130px;
+  padding-top: calc(185px + env(safe-area-inset-top, 0px));
 }
 
 
 @media (prefers-color-scheme: dark) {
   .page-header {
     background-color: #121212;
+  }
+
+  .filters {
+    ion-select,
+    ion-input.filter {
+      border-color: #3A3A3A;
+    }
   }
 }
 

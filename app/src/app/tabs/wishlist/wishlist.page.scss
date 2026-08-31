@@ -1,6 +1,6 @@
 .page-loader {
   text-align: center;
-  padding-top: 75px;
+  padding-top: calc(75px + env(safe-area-inset-top, 0px));
 }
 
 .page-header {
@@ -9,7 +9,7 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  padding-top: 10px;
+  padding-top: calc(10px + env(safe-area-inset-top, 0px));
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,7 +31,7 @@ button {
 }
 
 .wish-content {
-  padding-top: 70px;
+  padding-top: calc(70px + env(safe-area-inset-top, 0px));
 }
 
 .wrapper {
