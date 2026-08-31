@@ -176,16 +176,23 @@
           <ion-button
             expand="block"
             mode="ios"
-            [disabled]="isAddingBook"
             (click)="addByIsbn()">
-            @if (isAddingBook) {
-              <ion-spinner name="lines-sharp"></ion-spinner>
-            } @else {
-              add to library
-            }
+            add to library
           </ion-button>
         </div>
       </form>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<ion-modal
+  id="isbn-lookup-modal"
+  [isOpen]="isLookingUpIsbn"
+  [canDismiss]="false">
+  <ng-template>
+    <div class="lookup-wrapper">
+      <ion-spinner name="lines-sharp"></ion-spinner>
+      <div class="lookup-text">checking {{ currentLookupSource }}...</div>
     </div>
   </ng-template>
 </ion-modal>

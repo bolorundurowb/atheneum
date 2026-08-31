@@ -103,6 +103,11 @@ export class TabsPage implements OnInit {
 
   isAddingBook: boolean = false;
 
+  isLookingUpIsbn = false;
+  currentLookupSource = 'Google Books';
+  isbnSources = [ 'Google Books', 'Open Library', 'Internet Archive', 'Wikidata' ];
+  private lookupTimer: any;
+
   isManualBookModalVisible = false;
   manualPayload: ManualBookPayload = {};
 
@@ -146,18 +151,15 @@ export class TabsPage implements OnInit {
   }
 
   async addByIsbn() {
-    this.isAddingBook = true;
+    const isbn = this.isbnPayload.isbn?.trim();
 
-    try {
-      await this.bookService.createByIsbn(this.isbnPayload);
-      await this.notificationService.success('Book successfully added to library');
-
-      this.dismissManualIsbnModal();
-    } catch (e) {
-      await this.notificationService.error(e as string);
-    } finally {
-      this.isAddingBook = false;
+    if (!isbn) {
+      await this.notificationService.error('Please enter an ISBN');
+      return;
     }
+
+    this.dismissManualIsbnModal();
+    await this.lookupAndAddBook(isbn);
   }
 
   async canDismiss(data?: any, role?: string) {
@@ -186,16 +188,47 @@ export class TabsPage implements OnInit {
       }
 
       for (const barcode of barcodes) {
-        await this.bookService.createByIsbn({ isbn: barcode.displayValue });
-        await this.notificationService.success('Book successfully added to library');
+        await this.lookupAndAddBook(barcode.displayValue);
       }
     } catch (e) {
       if (e !== undefined) {
         await this.notificationService.error(e as string);
       }
-    } finally {
-      this.isAddingBook = false;
     }
+  }
+
+  private async lookupAndAddBook(isbn: string) {
+    this.startLookupIndicator();
+
+    try {
+      const result = await this.bookService.createByIsbn({ isbn });
+      const source = result?.source ?? 'a service';
+      await this.notificationService.success(`Book successfully added (found via ${source})`);
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    } finally {
+      this.stopLookupIndicator();
+    }
+  }
+
+  private startLookupIndicator() {
+    this.isLookingUpIsbn = true;
+    this.currentLookupSource = this.isbnSources[0];
+    let index = 0;
+
+    this.lookupTimer = setInterval(() => {
+      index = (index + 1) % this.isbnSources.length;
+      this.currentLookupSource = this.isbnSources[index];
+    }, 800);
+  }
+
+  private stopLookupIndicator() {
+    if (this.lookupTimer) {
+      clearInterval(this.lookupTimer);
+      this.lookupTimer = undefined;
+    }
+
+    this.isLookingUpIsbn = false;
   }
 
   async requestPermissions(): Promise<boolean> {

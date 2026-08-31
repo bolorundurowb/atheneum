@@ -58,7 +58,9 @@ export class WishListService {
       );
     }
 
-    const bookInfo = await this.isbnService.getBookByIsbn(details.bookIsbn);
+    const bookInfo = details.bookIsbn
+      ? await this.isbnService.getBookByIsbn(details.bookIsbn)
+      : null;
 
     wish = new this.wishListModel({
       owner,
@@ -67,8 +69,8 @@ export class WishListService {
       isbn: details.bookIsbn
     });
 
-    if (bookInfo && bookInfo.coverArt) {
-      wish.coverArt = bookInfo.coverArt;
+    if (bookInfo?.book?.coverArt) {
+      wish.coverArt = bookInfo.book.coverArt;
     }
 
     await wish.save();

@@ -111,7 +111,7 @@ export class BooksService {
     return this.bookModel.countDocuments({ owner: ownerId });
   }
 
-  async addByIsbn(ownerId: any, isbn: string): Promise<Book> {
+  async addByIsbn(ownerId: any, isbn: string): Promise<any> {
     // find the owner
     const owner = await this.userService.findById(ownerId);
 
@@ -129,14 +129,16 @@ export class BooksService {
       );
     }
 
-    const bookInfo = await this.isbnService.getBookByIsbn(isbn);
+    const lookup = await this.isbnService.getBookByIsbn(isbn);
 
-    if (!bookInfo) {
+    if (!lookup.book) {
       throw new NotFoundException(
         null,
         'Our sources do not have a book with the provided ISBN.'
       );
     }
+
+    const bookInfo = lookup.book;
 
     // get the publisher
     const publisher = await this.getOrCreatePublisher(
@@ -163,7 +165,11 @@ export class BooksService {
       bookInfo.isbn13
     );
 
-    return book;
+    return {
+      book,
+      source: lookup.source,
+      attemptedSources: lookup.attemptedSources
+    };
   }
 
   async addManual(ownerId: any, details: BookManualDto): Promise<Book> {

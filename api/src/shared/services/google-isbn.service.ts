@@ -5,9 +5,12 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { BookInfoDto } from '../../books/dtos/book-info.dto';
+import { IsbnProvider } from './isbn-provider.interface';
 
 @Injectable()
-export class GoogleIsbnService {
+export class GoogleIsbnService implements IsbnProvider {
+  readonly name = 'Google Books';
+
   private readonly baseUrl =
     'https://www.googleapis.com/books/v1/volumes?q=isbn:';
   private readonly logger = new Logger(GoogleIsbnService.name);
