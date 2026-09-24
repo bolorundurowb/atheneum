@@ -188,7 +188,8 @@
 <ion-modal
   id="isbn-lookup-modal"
   [isOpen]="isLookingUpIsbn"
-  [canDismiss]="false">
+  [backdropDismiss]="false"
+  [canDismiss]="canDismiss">
   <ng-template>
     <div class="lookup-wrapper">
       <ion-spinner name="lines-sharp"></ion-spinner>
