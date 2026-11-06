@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router, RouterLink } from '@angular/router';
-import { IonButton, IonContent, IonInput, IonLabel, IonSpinner } from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonInput, IonLabel, IonSpinner } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
 interface LoginPayload {
