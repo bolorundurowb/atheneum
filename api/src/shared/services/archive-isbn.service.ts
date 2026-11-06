@@ -20,7 +20,9 @@ export class ArchiveIsbnService implements IsbnProvider {
         `&fl%5B%5D=identifier&fl%5B%5D=title&fl%5B%5D=creator&fl%5B%5D=publisher` +
         `&fl%5B%5D=date&fl%5B%5D=isbn&fl%5B%5D=description&rows=1&output=json`;
 
-      const response = await this.httpService.get<any>(url).toPromise();
+      const response = await this.httpService
+        .get<any>(url, { timeout: 5000 })
+        .toPromise();
       const data = response?.data?.response?.docs?.[0];
 
       if (!data) {
@@ -40,7 +42,7 @@ export class ArchiveIsbnService implements IsbnProvider {
         title: data.title,
         authors: this.cleanAuthors(data.creator || []),
         publisher: this.cleanPublisher(data.publisher),
-        publishYear: data.date ? new Date(data.date).getFullYear() : 0,
+        publishYear: this.getYear(data.date),
         summary: data.description,
         isbn: isbn10,
         isbn13: isbn13,
@@ -65,6 +67,11 @@ export class ArchiveIsbnService implements IsbnProvider {
       .filter((x) => x);
 
     return cleaned.length ? cleaned : ['No Author'];
+  }
+
+  private getYear(date?: string): number {
+    const year = date?.match(/\b(?:18|19|20|21)\d{2}\b/)?.[0];
+    return year ? Number(year) : 0;
   }
 
   private cleanPublisher(publisher?: string): string | undefined {

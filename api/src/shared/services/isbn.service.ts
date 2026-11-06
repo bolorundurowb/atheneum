@@ -7,7 +7,6 @@ import { BookInfoDto } from '../../books/dtos/book-info.dto';
 import { GoogleIsbnService } from './google-isbn.service';
 import { OpenLibraryIsbnService } from './open-library-isbn.service';
 import { ArchiveIsbnService } from './archive-isbn.service';
-import { WikidataIsbnService } from './wikidata-isbn.service';
 import { IsbnProvider } from './isbn-provider.interface';
 
 export interface IsbnLookupResult {
@@ -23,14 +22,12 @@ export class IsbnService {
   constructor(
     private googleIsbnService: GoogleIsbnService,
     private openLibIsbnService: OpenLibraryIsbnService,
-    private archiveIsbnService: ArchiveIsbnService,
-    private wikidataIsbnService: WikidataIsbnService
+    private archiveIsbnService: ArchiveIsbnService
   ) {
     this.providers = [
       this.googleIsbnService,
       this.openLibIsbnService,
-      this.archiveIsbnService,
-      this.wikidataIsbnService
+      this.archiveIsbnService
     ];
   }
 
@@ -40,7 +37,13 @@ export class IsbnService {
     for (const provider of this.providers) {
       attemptedSources.push(provider.name);
 
-      const book = await provider.search(isbn);
+      // Keep one failing provider from preventing the remaining sources from running.
+      let book: BookInfoDto;
+      try {
+        book = await provider.search(isbn);
+      } catch {
+        book = null;
+      }
 
       if (book) {
         return { book, source: provider.name, attemptedSources };

@@ -21,7 +21,7 @@ export class OpenLibraryIsbnService implements IsbnProvider {
   async search(isbn: string): Promise<BookInfoDto> {
     try {
       const response = await this.httpService
-        .get<any>(`${this.baseIsbnUrl}/${isbn}.json`)
+        .get<any>(`${this.baseIsbnUrl}/${isbn}.json`, { timeout: 5000 })
         .toPromise();
       const data = response?.data;
 
@@ -31,12 +31,12 @@ export class OpenLibraryIsbnService implements IsbnProvider {
 
       const bookInfo: any = {
         externalId: data.key,
-        publisher: data.publishers[0],
-        publishYear: new Date(data.publish_date).getFullYear(),
+        publisher: data.publishers?.[0],
+        publishYear: this.getYear(data.publish_date),
         summary: data.first_sentence,
         title: data.title,
-        isbn: data.isbn_10[0],
-        isbn13: data.isbn_13[0],
+        isbn: data.isbn_10?.[0],
+        isbn13: data.isbn_13?.[0],
         pageCount: data.number_of_pages,
         source: 'Open Library'
       };
@@ -80,9 +80,16 @@ export class OpenLibraryIsbnService implements IsbnProvider {
 
     const authors = await Promise.all(
       authorIds.map((x) =>
-        this.httpService.get<any>(`${this.baseUrl}${x}.json`).toPromise()
+        this.httpService
+          .get<any>(`${this.baseUrl}${x}.json`, { timeout: 5000 })
+          .toPromise()
       )
     );
-    return authors.map((x) => x.data?.name);
+    return authors.map((x) => x.data?.name).filter(Boolean);
+  }
+
+  private getYear(date?: string): number {
+    const year = date?.match(/\b(?:18|19|20|21)\d{2}\b/)?.[0];
+    return year ? Number(year) : 0;
   }
 }

@@ -41,11 +41,11 @@ export class BooksService {
     };
 
     if (qm.publisherId) {
-      query.publisher = qm.publisherId;
+      query['publisher._id'] = qm.publisherId;
     }
 
     if (qm.authorId) {
-      query.authors = qm.authorId;
+      query['authors._id'] = qm.authorId;
     }
 
     if (qm.publishYear) {

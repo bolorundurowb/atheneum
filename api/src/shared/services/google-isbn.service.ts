@@ -6,21 +6,30 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { BookInfoDto } from '../../books/dtos/book-info.dto';
 import { IsbnProvider } from './isbn-provider.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class GoogleIsbnService implements IsbnProvider {
   readonly name = 'Google Books';
 
-  private readonly baseUrl =
-    'https://www.googleapis.com/books/v1/volumes?q=isbn:';
+  private readonly baseUrl = 'https://www.googleapis.com/books/v1/volumes';
   private readonly logger = new Logger(GoogleIsbnService.name);
 
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    private config: ConfigService
+  ) {}
 
   async search(isbn: string): Promise<BookInfoDto> {
     try {
       const response = await this.httpService
-        .get<any>(`${this.baseUrl}${isbn}`)
+        .get<any>(this.baseUrl, {
+          params: {
+            q: `isbn:${isbn}`,
+            key: this.config.get<string>('googleBooks.apiKey') || undefined
+          },
+          timeout: 5000
+        })
         .toPromise();
       const items = response.data?.items || [];
       const data = items[0];
@@ -31,7 +40,8 @@ export class GoogleIsbnService implements IsbnProvider {
 
       this.logger.log('Successfully retrieved external book info from Google.');
 
-      const volInfo = data.volumeInfo;
+      const volInfo = data.volumeInfo || {};
+      const identifiers = volInfo.industryIdentifiers || [];
       return {
         externalId: data.id,
         authors: volInfo.authors || ['No Author'],
@@ -42,11 +52,8 @@ export class GoogleIsbnService implements IsbnProvider {
             : 0,
         summary: volInfo.description,
         title: volInfo.title,
-        isbn: volInfo.industryIdentifiers.filter((x) => x.type === 'ISBN_10')[0]
-          ?.identifier,
-        isbn13: volInfo.industryIdentifiers.filter(
-          (x) => x.type === 'ISBN_13'
-        )[0]?.identifier,
+        isbn: identifiers.find((x) => x.type === 'ISBN_10')?.identifier,
+        isbn13: identifiers.find((x) => x.type === 'ISBN_13')?.identifier,
         coverArt: volInfo.imageLinks?.thumbnail,
         pageCount: volInfo.pageCount,
         source: 'Google Books'

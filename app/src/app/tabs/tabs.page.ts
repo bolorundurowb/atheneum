@@ -117,7 +117,7 @@ export class TabsPage implements OnInit {
 
   isLookingUpIsbn = false;
   currentLookupSource = 'Google Books';
-  isbnSources = [ 'Google Books', 'Open Library', 'Internet Archive', 'Wikidata' ];
+  isbnSources = [ 'Google Books', 'Open Library', 'Internet Archive' ];
   private lookupTimer: any;
 
   isManualBookModalVisible = false;
