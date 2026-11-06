@@ -225,11 +225,11 @@ export class SettingsPage implements OnInit {
   }
 
   async goToSourceCode() {
-    await Browser.open({ url: 'https://github.com/bolorundurowb/atheneum-app' });
+    await Browser.open({ url: 'https://github.com/bolorundurowb/atheneum' });
   }
 
   async giveFeedback() {
-    await Browser.open({ url: 'https://github.com/bolorundurowb/atheneum-app/issues' });
+    await Browser.open({ url: 'https://github.com/bolorundurowb/atheneum/issues' });
   }
 
   setUser(user: any) {
