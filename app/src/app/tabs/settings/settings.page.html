@@ -172,6 +172,28 @@
         </div>
       </div>
     </ion-accordion>
+    <ion-accordion value="updates">
+      <ion-item slot="header" color="light">
+        <ion-label>Updates</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <p>Current version: {{ appVersion || '(Not Available)' }}</p>
+        @if (latestReleaseVersion) {
+          <p>Latest GitHub release: {{ latestReleaseVersion }}</p>
+        }
+        <ion-button
+          expand="block"
+          mode="ios"
+          [disabled]="isCheckingForUpdates"
+          (click)="checkForUpdates()">
+          @if (isCheckingForUpdates) {
+            <ion-spinner name="lines-sharp"></ion-spinner>
+          } @else {
+            check for updates
+          }
+        </ion-button>
+      </div>
+    </ion-accordion>
     <ion-accordion value="about">
       <ion-item slot="header" color="light">
         <ion-label>About</ion-label>

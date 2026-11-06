@@ -1,10 +1,11 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { AccountService, AuthService, NotificationService, UserService } from '../../services';
+import { AccountService, AuthService, NotificationService, UpdateService, UserService } from '../../services';
 import { Router } from '@angular/router';
 
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import {
+  AlertController,
   IonAccordion,
   IonAccordionGroup,
   IonAlert,
@@ -58,8 +59,14 @@ export class SettingsPage implements OnInit {
   private userService = inject(UserService);
   private notificationService = inject(NotificationService);
   private accountService = inject(AccountService);
+  private updateService = inject(UpdateService);
+  private alertController = inject(AlertController);
 
   appVersion?: string;
+  latestReleaseVersion?: string;
+  latestReleaseUrl?: string;
+  updateAvailable = false;
+  isCheckingForUpdates = false;
   logOutButtons = [
     {
       text: 'Cancel',
@@ -114,6 +121,46 @@ export class SettingsPage implements OnInit {
 
   async ngOnInit() {
     await this.loadData();
+    void this.checkForUpdates(false);
+  }
+
+  async checkForUpdates(showCurrentStatus = true) {
+    this.isCheckingForUpdates = true;
+    try {
+      const release = await this.updateService.getLatestRelease();
+      this.latestReleaseVersion = release.tag_name;
+      this.latestReleaseUrl = release.html_url;
+      this.updateAvailable = !!this.appVersion && this.updateService.isNewerVersion(
+        release.tag_name,
+        this.appVersion
+      );
+
+      if (this.updateAvailable) {
+        const alert = await this.alertController.create({
+          header: 'Update available',
+          message: `Atheneum ${release.tag_name} is available. Open the GitHub release to download it.`,
+          buttons: [
+            { text: 'Later', role: 'cancel' },
+            { text: 'View release', handler: () => this.openLatestRelease() }
+          ]
+        });
+        await alert.present();
+      } else if (showCurrentStatus) {
+        await this.notificationService.info('You are using the latest release');
+      }
+    } catch (e) {
+      if (showCurrentStatus) {
+        await this.notificationService.error('Could not check GitHub for updates');
+      }
+    } finally {
+      this.isCheckingForUpdates = false;
+    }
+  }
+
+  async openLatestRelease() {
+    if (this.latestReleaseUrl) {
+      await Browser.open({ url: this.latestReleaseUrl });
+    }
   }
 
   async handleRefresh(event: any) {
