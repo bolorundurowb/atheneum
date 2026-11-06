@@ -31,7 +31,7 @@
 <ion-action-sheet
   class="atheneum-actions"
   trigger="open-new-book-sheet"
-  header="add to your library"
+  header="choose how to add a book"
   [buttons]="actionSheetButtons"></ion-action-sheet>
 
 <ion-modal
@@ -41,7 +41,7 @@
   <ng-template>
     <div class="wrapper">
       <ion-toolbar>
-        <ion-title>add book</ion-title>
+        <ion-title>add book details</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="dismissManualBookModal()">
             <ion-icon slot="icon-only" name="close"></ion-icon>
@@ -205,7 +205,7 @@
   <ng-template>
     <div class="wrapper">
       <ion-toolbar>
-        <ion-title>add book</ion-title>
+        <ion-title>look up by ISBN</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="dismissManualIsbnModal()">
             <ion-icon slot="icon-only" name="close"></ion-icon>
