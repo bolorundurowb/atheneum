@@ -347,7 +347,7 @@ export class TabsPage implements OnInit {
     }, 800);
   }
 
-  private stopLookupIndicator() {
+  stopLookupIndicator() {
     if (this.lookupTimer) {
       clearInterval(this.lookupTimer);
       this.lookupTimer = undefined;
