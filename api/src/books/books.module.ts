@@ -13,6 +13,10 @@ import { AuthorsController } from './controllers/authors.controller';
 import { SharedModule } from '../shared/shared.module';
 import { WishListModule } from '../wish-list/wish-list.module';
 import { BookCoverService } from './services/book-cover.service';
+import {
+  BookScanFailure,
+  BookScanFailureSchema
+} from './schemas/book-scan-failure.schema';
 
 @Module({
   providers: [BooksService, PublisherService, AuthorService, BookCoverService],
@@ -24,7 +28,8 @@ import { BookCoverService } from './services/book-cover.service';
     MongooseModule.forFeature([
       { name: Book.name, schema: BookSchema },
       { name: Author.name, schema: AuthorSchema },
-      { name: Publisher.name, schema: PublisherSchema }
+      { name: Publisher.name, schema: PublisherSchema },
+      { name: BookScanFailure.name, schema: BookScanFailureSchema }
     ])
   ],
   exports: [BooksService, AuthorService, PublisherService]

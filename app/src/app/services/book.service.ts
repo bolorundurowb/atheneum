@@ -47,6 +47,12 @@ export class BookService {
     );
   }
 
+  logOcrFailure(payload: { reason: string; confidence?: number }): Promise<any> {
+    return asPromise(
+      this.http.post<any>(`${this.baseUrl}/ocr-failures`, payload)
+    );
+  }
+
   removeBook(bookId: any): Promise<any> {
     return asPromise(this.http.delete<any>(`${this.baseUrl}/${bookId}`));
   }
