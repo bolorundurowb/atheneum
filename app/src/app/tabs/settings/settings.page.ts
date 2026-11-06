@@ -19,6 +19,7 @@ import {
   IonRefresherContent
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
+import { GithubRateLimitError } from '../../services/update.service';
 
 interface UpdateProfilePayload {
   id?: string;
@@ -150,7 +151,14 @@ export class SettingsPage implements OnInit {
       }
     } catch (e) {
       if (showCurrentStatus) {
-        await this.notificationService.error('Could not check GitHub for updates');
+        if (e instanceof GithubRateLimitError) {
+          const minutes = Math.max(1, Math.ceil((e.retryAt - Date.now()) / 60000));
+          await this.notificationService.info(
+            `GitHub is temporarily limiting update checks. Atheneum is still available; try again in about ${minutes} minutes.`
+          );
+        } else {
+          await this.notificationService.error('Could not check GitHub for updates');
+        }
       }
     } finally {
       this.isCheckingForUpdates = false;
