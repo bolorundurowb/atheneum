@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { User } from '../../users/schemas/user.schema';
 import * as shortId from 'shortid';
 
 export type BookScanFailureDocument = BookScanFailure & Document;
