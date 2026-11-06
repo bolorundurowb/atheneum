@@ -67,6 +67,18 @@ ion-modal#isbn-lookup-modal {
   }
 }
 
+.cover-crop-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 16px;
+
+  image-cropper {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
 
 @media (prefers-color-scheme: dark) {
   ion-tab-bar {
