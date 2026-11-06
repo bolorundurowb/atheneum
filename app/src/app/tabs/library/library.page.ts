@@ -17,7 +17,7 @@ import {
   IonSelectOption,
   IonSpinner,
   NavController
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { BookComponent } from '../../shared/book/book.component';
 import { EmptyComponent } from '../../shared/empty/empty.component';

@@ -14,7 +14,7 @@ import {
   NavController,
   IonRefresher,
   IonRefresherContent
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { BookService, NotificationService } from '../../services';
 import { convertToHttps } from '../../utils';

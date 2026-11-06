@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { AuthService, NotificationService } from '../../services';
 import { Router } from '@angular/router';
-import { IonButton, IonContent, IonInput, IonLabel, IonSpinner } from '@ionic/angular/standalone';
+import { IonButton, IonContent, IonInput, IonLabel, IonSpinner } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 
 interface VerificationPayload {

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ToastController } from '@ionic/angular/standalone';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {

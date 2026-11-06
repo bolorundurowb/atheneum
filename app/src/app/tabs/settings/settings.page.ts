@@ -17,7 +17,7 @@ import {
   IonSpinner,
   IonRefresher,
   IonRefresherContent
-} from '@ionic/angular/standalone';
+} from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { GithubRateLimitError } from '../../services/update.service';
 

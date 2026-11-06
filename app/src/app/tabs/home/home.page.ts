@@ -7,7 +7,7 @@ import {
   PublisherService,
   StatisticService
 } from '../../services';
-import { IonCol, IonContent, IonGrid, IonRow, IonSpinner, NavController, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
+import { IonCol, IonContent, IonGrid, IonRow, IonSpinner, NavController, IonRefresher, IonRefresherContent } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { EmptyComponent } from '../../shared/empty/empty.component';
 import { BookComponent } from '../../shared/book/book.component';
