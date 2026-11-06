@@ -17,6 +17,11 @@ import { BookManualDto } from '../dtos/book-manual.dto';
 import { BookQueryDto } from '../dtos/book-query.dto';
 import { User } from '../../users/schemas/user.schema';
 import { WishListService } from '../../wish-list/services/wish-list.service';
+import {
+  BookScanFailure,
+  BookScanFailureDocument
+} from '../schemas/book-scan-failure.schema';
+import { BookScanFailureDto } from '../dtos/book-scan-failure.dto';
 
 @Injectable()
 export class BooksService {
@@ -32,7 +37,9 @@ export class BooksService {
     @InjectModel(Book.name) private bookModel: Model<BookDocument>,
     @InjectModel(Author.name) private authorModel: Model<AuthorDocument>,
     @InjectModel(Publisher.name)
-    private publisherModel: Model<PublisherDocument>
+    private publisherModel: Model<PublisherDocument>,
+    @InjectModel(BookScanFailure.name)
+    private scanFailureModel: Model<BookScanFailureDocument>
   ) {}
 
   async getAll(ownerId: any, qm: BookQueryDto): Promise<Array<any>> {
@@ -110,6 +117,13 @@ export class BooksService {
 
   async getAllCount(ownerId: any): Promise<number> {
     return this.bookModel.countDocuments({ owner: ownerId });
+  }
+
+  async logScanFailure(
+    ownerId: string,
+    failure: BookScanFailureDto
+  ): Promise<void> {
+    await this.scanFailureModel.create({ owner: ownerId, ...failure });
   }
 
   async addByIsbn(ownerId: any, isbn: string): Promise<any> {
@@ -325,6 +339,7 @@ export class BooksService {
     await Promise.all(
       books.map((x) => this.bookModel.findByIdAndDelete(x._id))
     );
+    await this.scanFailureModel.deleteMany({ owner: ownerId });
   }
 
   private async bookExistsWithIsbn(

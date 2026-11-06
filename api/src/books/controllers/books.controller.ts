@@ -18,6 +18,7 @@ import { BookQueryDto } from '../dtos/book-query.dto';
 import { BorrowBookDto } from '../dtos/borrow-book.dto';
 import { BookCoverDto } from '../dtos/book-cover.dto';
 import { BookCoverService } from '../services/book-cover.service';
+import { BookScanFailureDto } from '../dtos/book-scan-failure.dto';
 
 @ApiTags('Books')
 @UseGuards(JwtAuthGuard)
@@ -72,6 +73,12 @@ export class BooksController {
   @Post('cover')
   async uploadCover(@Body() payload: BookCoverDto) {
     return { url: await this.bookCoverService.upload(payload.image) };
+  }
+
+  @Post('ocr-failures')
+  async logScanFailure(@Request() req, @Body() payload: BookScanFailureDto) {
+    await this.bookService.logScanFailure(req.user.id, payload);
+    return { logged: true };
   }
 
   @Post(':bookId/borrow')

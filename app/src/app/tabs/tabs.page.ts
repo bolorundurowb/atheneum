@@ -286,10 +286,7 @@ export class TabsPage implements OnInit {
       const confidence = this.getOcrConfidence(details);
 
       if (confidence < 0.75) {
-        console.warn('[OCR_BOOK_SCAN_FAILED]', {
-          reason: 'low-confidence',
-          confidence
-        });
+        await this.logOcrFailure('low-confidence', confidence);
         return;
       }
 
@@ -306,10 +303,16 @@ export class TabsPage implements OnInit {
       await this.bookService.createManually(details);
       await this.notificationService.success('Book added from the cover scan');
     } catch (error) {
-      console.warn('[OCR_BOOK_SCAN_FAILED]', {
-        reason: 'processing-error',
-        message: error instanceof Error ? error.message : String(error)
-      });
+      await this.logOcrFailure('processing-error');
+      console.warn('Book cover scan could not be processed.', error);
+    }
+  }
+
+  private async logOcrFailure(reason: string, confidence?: number) {
+    try {
+      await this.bookService.logOcrFailure({ reason, confidence });
+    } catch (error) {
+      console.warn('Could not save the book scan failure log.', error);
     }
   }
 
