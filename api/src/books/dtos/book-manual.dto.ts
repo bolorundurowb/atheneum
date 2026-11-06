@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumberString,
   IsOptional,
+  IsUrl,
   MaxLength,
   MinLength
 } from 'class-validator';
@@ -38,4 +39,9 @@ export class BookManualDto {
   @ApiProperty()
   @IsOptional()
   pageCount?: number;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  @IsUrl({ protocols: ['https'] })
+  coverArt?: string;
 }

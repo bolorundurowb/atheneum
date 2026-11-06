@@ -56,6 +56,17 @@ ion-modal#isbn-lookup-modal {
   }
 }
 
+.cover-picker {
+  .cover-preview {
+    display: block;
+    width: min(160px, 50%);
+    max-height: 220px;
+    object-fit: contain;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+  }
+}
+
 
 @media (prefers-color-scheme: dark) {
   ion-tab-bar {

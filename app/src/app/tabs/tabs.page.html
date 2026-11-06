@@ -83,6 +83,23 @@
             [(ngModel)]="manualPayload.publisher"></ion-input>
         </div>
 
+        <div class="input-field cover-picker">
+          @if (manualPayload.coverArt) {
+            <img class="cover-preview" [src]="manualPayload.coverArt" alt="Selected book cover" />
+          }
+          <ion-button
+            expand="block"
+            fill="outline"
+            [disabled]="isUploadingCover"
+            (click)="chooseBookCover()">
+            @if (isUploadingCover) {
+              <ion-spinner name="lines-sharp"></ion-spinner>
+            } @else {
+              {{ manualPayload.coverArt ? 'change cover image' : 'add cover image' }}
+            }
+          </ion-button>
+        </div>
+
         <div class="input-field">
           <ion-input
             name="book-isbn"
@@ -131,7 +148,7 @@
           <ion-button
             expand="block"
             mode="ios"
-            [disabled]="isAddingBook"
+            [disabled]="isAddingBook || isUploadingCover"
             (click)="addManual()">
             @if (isAddingBook) {
               <ion-spinner name="lines-sharp"></ion-spinner>
