@@ -53,25 +53,26 @@ export class BooksService {
     }
 
     if (qm.search) {
-      const caseInsensitiveSearch = {
-        $regex: new RegExp(qm.search, 'i')
-      };
+      const search = qm.search.trim();
+      const yearSearch = /^[12]\d{3}$/.test(search);
+      if (yearSearch) {
+        query.publishYear = Number(search);
+      } else {
+        const safeSearch = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const caseInsensitiveSearch = {
+          $regex: new RegExp(safeSearch, 'i')
+        };
 
-      const orQueries: Array<any> = [
-        { title: caseInsensitiveSearch },
-        { isbn: caseInsensitiveSearch },
-        { isbn13: caseInsensitiveSearch },
-        { 'publisher.name': caseInsensitiveSearch },
-        { 'authors.name': caseInsensitiveSearch }
-      ];
+        const orQueries: Array<any> = [
+          { title: caseInsensitiveSearch },
+          { isbn: caseInsensitiveSearch },
+          { isbn13: caseInsensitiveSearch },
+          { 'publisher.name': caseInsensitiveSearch },
+          { 'authors.name': caseInsensitiveSearch }
+        ];
 
-      if (!isNaN(Number(qm.search))) {
-        orQueries.push({
-          publishYear: Number(qm.search)
-        });
+        query.$or = orQueries;
       }
-
-      query.$or = orQueries;
     }
 
     if (qm.available !== undefined) {

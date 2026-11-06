@@ -46,10 +46,7 @@ export class GoogleIsbnService implements IsbnProvider {
         externalId: data.id,
         authors: volInfo.authors || ['No Author'],
         publisher: volInfo.publisher,
-        publishYear:
-          volInfo.publishedDate && /^\d+$/.test(volInfo.publishedDate)
-            ? +volInfo.publishedDate
-            : 0,
+        publishYear: this.getYear(volInfo.publishedDate),
         summary: volInfo.description,
         title: volInfo.title,
         isbn: identifiers.find((x) => x.type === 'ISBN_10')?.identifier,
@@ -73,5 +70,10 @@ export class GoogleIsbnService implements IsbnProvider {
 
       return null;
     }
+  }
+
+  private getYear(date?: string): number {
+    const year = date?.match(/\b[12]\d{3}\b/)?.[0];
+    return year ? Number(year) : 0;
   }
 }
