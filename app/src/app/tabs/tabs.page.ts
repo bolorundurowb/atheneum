@@ -70,7 +70,7 @@ export class TabsPage implements OnInit {
 
   public actionSheetButtons = [
     {
-      text: 'scan barcode',
+      text: 'scan barcode and look up ISBN',
       data: {
         action: 'scan-isbn',
       },
@@ -79,16 +79,7 @@ export class TabsPage implements OnInit {
       }
     },
     {
-      text: 'scan book (OCR)',
-      data: {
-        action: 'ocr',
-      },
-      handler: async () => {
-        await this.addByOcr();
-      }
-    },
-    {
-      text: 'enter isbn',
+      text: 'look up by ISBN',
       data: {
         action: 'manual-isbn',
       },
@@ -97,12 +88,21 @@ export class TabsPage implements OnInit {
       }
     },
     {
-      text: 'manually enter',
+      text: 'enter book details manually',
       data: {
         action: 'manual-entry',
       },
       handler: () => {
         this.isManualBookModalVisible = true;
+      }
+    },
+    {
+      text: 'scan both covers (auto-add if recognized)',
+      data: {
+        action: 'ocr',
+      },
+      handler: async () => {
+        await this.addByOcr();
       }
     },
     {
