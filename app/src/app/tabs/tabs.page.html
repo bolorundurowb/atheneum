@@ -83,6 +83,24 @@
             [(ngModel)]="manualPayload.publisher"></ion-input>
         </div>
 
+        <div class="input-field cover-picker">
+          @if (manualPayload.coverArt) {
+            <img class="cover-preview" [src]="manualPayload.coverArt" alt="Selected book cover" />
+          }
+          <ion-button
+            expand="block"
+            fill="outline"
+            [disabled]="isUploadingCover"
+            (click)="chooseBookCover()">
+            @if (isUploadingCover) {
+              <ion-spinner name="lines-sharp"></ion-spinner>
+            } @else {
+              {{ manualPayload.coverArt ? 'change cover image' : 'add cover image' }}
+            }
+          </ion-button>
+          <ion-label class="cover-hint">choose a crop before uploading; images are resized to save storage</ion-label>
+        </div>
+
         <div class="input-field">
           <ion-input
             name="book-isbn"
@@ -131,7 +149,7 @@
           <ion-button
             expand="block"
             mode="ios"
-            [disabled]="isAddingBook"
+            [disabled]="isAddingBook || isUploadingCover"
             (click)="addManual()">
             @if (isAddingBook) {
               <ion-spinner name="lines-sharp"></ion-spinner>
@@ -141,6 +159,41 @@
           </ion-button>
         </div>
       </form>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [isOpen]="isCoverCropModalVisible" (didDismiss)="cancelCoverCrop()">
+  <ng-template>
+    <div class="cover-crop-wrapper">
+      <ion-toolbar>
+        <ion-title>crop book cover</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="cancelCoverCrop()">cancel</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+
+      @if (coverImageBase64) {
+        <image-cropper
+          [imageBase64]="coverImageBase64"
+          [maintainAspectRatio]="true"
+          [aspectRatio]="2 / 3"
+          [resizeToWidth]="1200"
+          [resizeToHeight]="1800"
+          [onlyScaleDown]="true"
+          [imageQuality]="80"
+          format="jpeg"
+          output="base64"
+          (imageCropped)="onCoverCropped($event)"></image-cropper>
+      }
+
+      <ion-button expand="block" [disabled]="isUploadingCover || !croppedCoverBase64" (click)="uploadCroppedCover()">
+        @if (isUploadingCover) {
+          <ion-spinner name="lines-sharp"></ion-spinner>
+        } @else {
+          upload cropped cover
+        }
+      </ion-button>
     </div>
   </ng-template>
 </ion-modal>
