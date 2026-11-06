@@ -117,7 +117,7 @@ export class TabsPage implements OnInit {
 
   isLookingUpIsbn = false;
   currentLookupSource = 'Google Books';
-  isbnSources = [ 'Google Books', 'Open Library', 'Internet Archive', 'Wikidata' ];
+  isbnSources = [ 'Google Books', 'Open Library', 'Internet Archive' ];
   private lookupTimer: any;
 
   isManualBookModalVisible = false;
@@ -347,7 +347,7 @@ export class TabsPage implements OnInit {
     }, 800);
   }
 
-  private stopLookupIndicator() {
+  stopLookupIndicator() {
     if (this.lookupTimer) {
       clearInterval(this.lookupTimer);
       this.lookupTimer = undefined;

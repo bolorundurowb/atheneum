@@ -17,7 +17,7 @@ export class BookService {
     const params = [
       `skip=${skip}`,
       `limit=${limit}`,
-      `search=${search}`,
+      `search=${encodeURIComponent(search)}`,
       `publisherId=${publisherId}`,
       `authorId=${authorId}`
     ];

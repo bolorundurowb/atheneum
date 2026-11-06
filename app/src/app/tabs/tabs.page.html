@@ -188,10 +188,14 @@
 <ion-modal
   id="isbn-lookup-modal"
   [isOpen]="isLookingUpIsbn"
-  [backdropDismiss]="false"
-  [canDismiss]="canDismiss">
+  [backdropDismiss]="true"
+  [canDismiss]="true"
+  (ionModalDidDismiss)="stopLookupIndicator()">
   <ng-template>
     <div class="lookup-wrapper">
+      <ion-button fill="clear" class="lookup-close" aria-label="Close lookup status" (click)="stopLookupIndicator()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
       <ion-spinner name="lines-sharp"></ion-spinner>
       <div class="lookup-text">checking {{ currentLookupSource }}...</div>
     </div>
