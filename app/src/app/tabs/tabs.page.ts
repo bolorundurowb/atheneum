@@ -22,6 +22,7 @@ import {
   IonToolbar
 } from '@ionic/angular/standalone';
 import { FormsModule } from '@angular/forms';
+import { ImageCropperComponent, ImageCroppedEvent } from 'ngx-image-cropper';
 import { addIcons } from 'ionicons';
 import { close } from 'ionicons/icons';
 
@@ -59,6 +60,7 @@ export interface ManualIsbnPayload {
     IonTextarea,
     IonModal,
     IonActionSheet,
+    ImageCropperComponent,
     IonSpinner,
     FormsModule
   ]
@@ -124,6 +126,9 @@ export class TabsPage implements OnInit {
 
   isManualBookModalVisible = false;
   manualPayload: ManualBookPayload = {};
+  isCoverCropModalVisible = false;
+  coverImageBase64?: string;
+  croppedCoverBase64?: string;
 
   isManualIsbnModalVisible = false;
   isbnPayload: ManualIsbnPayload = {};
@@ -165,18 +170,44 @@ export class TabsPage implements OnInit {
       const photo = await Camera.getPhoto({
         resultType: CameraResultType.Base64,
         source: CameraSource.Photos,
-        quality: 85,
-        width: 1200
+        quality: 100
       });
       if (!photo.base64String) {
         return;
       }
 
       const mimeType = photo.format === 'png' ? 'image/png' : 'image/jpeg';
-      const { url } = await this.bookService.uploadCover(
-        `data:${mimeType};base64,${photo.base64String}`
-      );
+      this.coverImageBase64 = `data:${mimeType};base64,${photo.base64String}`;
+      this.croppedCoverBase64 = undefined;
+      this.isCoverCropModalVisible = true;
+    } catch (e) {
+      await this.notificationService.error(e as string);
+    } finally {
+      this.isUploadingCover = false;
+    }
+  }
+
+  onCoverCropped(event: ImageCroppedEvent) {
+    this.croppedCoverBase64 = event.base64 ?? undefined;
+  }
+
+  cancelCoverCrop() {
+    this.isCoverCropModalVisible = false;
+    this.coverImageBase64 = undefined;
+    this.croppedCoverBase64 = undefined;
+  }
+
+  async uploadCroppedCover() {
+    if (!this.croppedCoverBase64) {
+      await this.notificationService.error('Crop the cover image before uploading');
+      return;
+    }
+
+    this.isUploadingCover = true;
+    try {
+      const { url } = await this.bookService.uploadCover(this.croppedCoverBase64);
       this.manualPayload.coverArt = url;
+      this.cancelCoverCrop();
       await this.notificationService.success('Cover image uploaded');
     } catch (e) {
       await this.notificationService.error(e as string);

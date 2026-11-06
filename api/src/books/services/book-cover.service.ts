@@ -31,8 +31,9 @@ export class BookCoverService {
       cloud_name: cloudName,
       api_key: apiKey,
       api_secret: apiSecret,
-      folder: 'atheneum/books',
-      resource_type: 'image'
+      folder: 'atheneum',
+      resource_type: 'image',
+      transformation: { width: 1200, height: 1800, crop: 'limit', quality: 'auto:good', fetch_format: 'auto' }
     });
     return result.secure_url;
   }
