@@ -16,12 +16,17 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { BookManualDto } from '../dtos/book-manual.dto';
 import { BookQueryDto } from '../dtos/book-query.dto';
 import { BorrowBookDto } from '../dtos/borrow-book.dto';
+import { BookCoverDto } from '../dtos/book-cover.dto';
+import { BookCoverService } from '../services/book-cover.service';
 
 @ApiTags('Books')
 @UseGuards(JwtAuthGuard)
 @Controller('v1/books')
 export class BooksController {
-  constructor(private bookService: BooksService) {}
+  constructor(
+    private bookService: BooksService,
+    private bookCoverService: BookCoverService
+  ) {}
 
   @Get('')
   async getAll(@Request() req, @Query() qm: BookQueryDto) {
@@ -62,6 +67,11 @@ export class BooksController {
   async createManually(@Request() req, @Body() payload: BookManualDto) {
     const userId = req.user.id;
     return this.bookService.addManual(userId, payload);
+  }
+
+  @Post('cover')
+  async uploadCover(@Body() payload: BookCoverDto) {
+    return { url: await this.bookCoverService.upload(payload.image) };
   }
 
   @Post(':bookId/borrow')

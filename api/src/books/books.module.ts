@@ -12,9 +12,10 @@ import { AuthorService } from './services/author.service';
 import { AuthorsController } from './controllers/authors.controller';
 import { SharedModule } from '../shared/shared.module';
 import { WishListModule } from '../wish-list/wish-list.module';
+import { BookCoverService } from './services/book-cover.service';
 
 @Module({
-  providers: [BooksService, PublisherService, AuthorService],
+  providers: [BooksService, PublisherService, AuthorService, BookCoverService],
   controllers: [BooksController, PublishersController, AuthorsController],
   imports: [
     UsersModule,

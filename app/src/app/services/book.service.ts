@@ -41,6 +41,12 @@ export class BookService {
     return asPromise(this.http.post<any>(`${this.baseUrl}/manual`, payload));
   }
 
+  uploadCover(image: string): Promise<{ url: string }> {
+    return asPromise(
+      this.http.post<{ url: string }>(`${this.baseUrl}/cover`, { image })
+    );
+  }
+
   removeBook(bookId: any): Promise<any> {
     return asPromise(this.http.delete<any>(`${this.baseUrl}/${bookId}`));
   }

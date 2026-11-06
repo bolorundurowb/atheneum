@@ -10,7 +10,8 @@ A cross-platform mobile app for managing your personal book collection. Track wh
 
 ### Book Library
 - **Add books by ISBN** — scan a barcode with your device camera (using on-device ML Kit) and book details are fetched automatically from Google Books and Open Library.
-- **Add books manually** — enter title, authors, publisher, ISBN, and cover art when a barcode isn't available.
+- **Add books manually** — enter title, authors, publisher, ISBN, and upload a cover image.
+- **Scan both covers** — OCR extracts book details in the background and auto-adds scans that meet a confidence threshold.
 - **Search and filter** your collection by title, author, publisher, year, ISBN, or availability.
 - **Browse by author or publisher** — see all the authors and publishers represented in your library with quick-filtering.
 
@@ -45,7 +46,7 @@ A cross-platform mobile app for managing your personal book collection. Track wh
 | Database    | MongoDB (Mongoose ODM)          |
 | Auth        | JWT + Passport                  |
 | Email       | Mailgun                         |
-| ISBN Lookup | Google Books API + Open Library |
+| ISBN Lookup | Google Books + Open Library + Internet Archive |
 
 
 ## Getting Started (Development)
@@ -59,7 +60,7 @@ A cross-platform mobile app for managing your personal book collection. Track wh
 
 ```bash
 cd api
-cp .env.example .env   # configure your DB_URL, SECRET, MAILGUN_API_KEY, MAILGUN_DOMAIN
+cp .env.example .env   # configure DB_URL, SECRET, Mailgun, and Cloudinary credentials
 npm install
 npm run start:dev
 ```
