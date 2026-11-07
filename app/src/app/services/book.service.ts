@@ -2,6 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { asPromise } from '../utils';
+import { firstValueFrom, Observable } from 'rxjs';
+import { BookCard } from '../models/book';
 
 @Injectable({ providedIn: 'root' })
 export class BookService {
@@ -13,7 +15,11 @@ export class BookService {
     this.baseUrl = `${environment.baseApiUrl}/v1/books`;
   }
 
-  getAll(skip = 0, limit = 50, search = '', publisherId = '', authorId = '', publishYear?: number): Promise<any[]> {
+  getAll(skip = 0, limit = 50, search = '', publisherId = '', authorId = '', publishYear?: number): Promise<BookCard[]> {
+    return firstValueFrom(this.getAll$(skip, limit, search, publisherId, authorId, publishYear));
+  }
+
+  getAll$(skip = 0, limit = 50, search = '', publisherId = '', authorId = '', publishYear?: number): Observable<BookCard[]> {
     const params = [
       `skip=${skip}`,
       `limit=${limit}`,
@@ -26,7 +32,7 @@ export class BookService {
       params.push(`publishYear=${publishYear}`);
     }
 
-    return asPromise<any[]>(this.http.get<any>(`${this.baseUrl}?${params.join('&')}`));
+    return this.http.get<BookCard[]>(`${this.baseUrl}?${params.join('&')}`);
   }
 
   getRecent(): Promise<any[]> {

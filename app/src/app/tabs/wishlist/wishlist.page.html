@@ -24,7 +24,7 @@
     } @else {
     <ion-grid>
       <ion-row>
-        @for (book of wishlist; track $index) {
+        @for (book of wishlist; track book._id) {
           <ion-col size="4">
             <app-book [book]="book"></app-book>
           </ion-col>
