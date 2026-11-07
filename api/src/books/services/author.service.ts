@@ -48,8 +48,7 @@ export class AuthorService {
     });
   }
 
-  async removeOwned(ownerId: any): Promise<void> {
-    const authors = await this.getAll(ownerId);
-    await Promise.all(authors.map((x) => this.authorModel.deleteOne(x)));
+  async removeOwned(ownerId: string): Promise<void> {
+    await this.authorModel.deleteMany({ owner: ownerId });
   }
 }

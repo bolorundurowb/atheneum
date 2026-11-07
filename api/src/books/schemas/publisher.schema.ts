@@ -15,10 +15,12 @@ export class Publisher {
   _id: string;
 
   @Prop({ type: String, ref: 'User' })
-  owner: User;
+  owner: User | string;
 
   @Prop({ required: true })
   name: string;
 }
 
 export const PublisherSchema = SchemaFactory.createForClass(Publisher);
+
+PublisherSchema.index({ owner: 1, name: 1 });
