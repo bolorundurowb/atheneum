@@ -20,7 +20,7 @@ export class GoogleIsbnService implements IsbnProvider {
     private config: ConfigService
   ) {}
 
-  async search(isbn: string): Promise<BookInfoDto> {
+  async search(isbn: string, signal?: AbortSignal): Promise<BookInfoDto> {
     try {
       const response = await this.httpService
         .get<any>(this.baseUrl, {
@@ -28,6 +28,7 @@ export class GoogleIsbnService implements IsbnProvider {
             q: `isbn:${isbn}`,
             key: this.config.get<string>('googleBooks.apiKey') || undefined
           },
+          signal,
           timeout: 5000
         })
         .toPromise();
