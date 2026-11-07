@@ -56,7 +56,7 @@ export class UsersService {
       throw new NotFoundException(null, 'User account not found.');
     }
 
-    if (user && bcrypt.compareSync(currentPassword, user.passwordHash)) {
+    if (!(await bcrypt.compare(currentPassword, user.passwordHash))) {
       throw new BadRequestException(null, 'Current password does not match.');
     }
 
