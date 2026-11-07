@@ -29,11 +29,12 @@ export class StatisticsController {
   })
   async getAll(@Request() req): Promise<UserStatsDto> {
     const userId = req.user.id;
-    return {
-      books: await this.bookService.getAllCount(userId),
-      authors: await this.authorService.getAllCount(userId),
-      publishers: await this.publishService.getAllCount(userId),
-      wishListItems: await this.wishListService.getAllCount(userId)
-    };
+    const [books, authors, publishers, wishListItems] = await Promise.all([
+      this.bookService.getAllCount(userId),
+      this.authorService.getAllCount(userId),
+      this.publishService.getAllCount(userId),
+      this.wishListService.getAllCount(userId)
+    ]);
+    return { books, authors, publishers, wishListItems };
   }
 }
