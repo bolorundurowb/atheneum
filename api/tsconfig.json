@@ -11,7 +11,7 @@
     "sourceMap": true,
     "outDir": "./dist",
     "incremental": true,
-    "rootDir": "./",
+    "rootDir": "./src",
     "types": ["node", "mailgun-js"],
     "ignoreDeprecations": "6.0",
     "strict": false,
