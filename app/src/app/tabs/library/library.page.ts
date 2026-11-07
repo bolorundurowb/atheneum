@@ -69,16 +69,26 @@ export class LibraryPage implements OnInit {
 
   async ngOnInit() {
     this.isLoading = true;
+    void this.loadFilterOptions();
 
     try {
       this.books = await this.fetchBooks(this.getSkip(), this.limit);
-      this.authors = await this.authorService.getAll();
-      this.publishers = await this.publisherService.getAll();
     } catch (e) {
       await this.notificationService.error(e as string);
     } finally {
       this.isLoading = false;
     }
+  }
+
+  private async loadFilterOptions() {
+    const authors = this.authorService.getAll()
+      .then((result) => { this.authors = result; })
+      .catch((error) => this.notificationService.error(error as string));
+    const publishers = this.publisherService.getAll()
+      .then((result) => { this.publishers = result; })
+      .catch((error) => this.notificationService.error(error as string));
+
+    await Promise.all([authors, publishers]);
   }
 
   async goToBookDetails(book: any) {
