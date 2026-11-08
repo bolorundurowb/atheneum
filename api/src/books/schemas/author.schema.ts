@@ -15,10 +15,12 @@ export class Author {
   _id: string;
 
   @Prop({ type: String, ref: 'User' })
-  owner: User;
+  owner: User | string;
 
   @Prop()
   name: string;
 }
 
 export const AuthorSchema = SchemaFactory.createForClass(Author);
+
+AuthorSchema.index({ owner: 1, name: 1 });

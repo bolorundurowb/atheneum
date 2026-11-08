@@ -47,8 +47,7 @@ export class PublisherService {
     });
   }
 
-  async removeOwned(ownerId: any): Promise<void> {
-    const publishers = await this.getAll(ownerId);
-    await Promise.all(publishers.map((x) => this.publisherModel.deleteOne(x)));
+  async removeOwned(ownerId: string): Promise<void> {
+    await this.publisherModel.deleteMany({ owner: ownerId });
   }
 }
