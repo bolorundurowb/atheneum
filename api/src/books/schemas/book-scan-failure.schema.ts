@@ -24,3 +24,5 @@ export class BookScanFailure {
 
 export const BookScanFailureSchema =
   SchemaFactory.createForClass(BookScanFailure);
+
+BookScanFailureSchema.index({ owner: 1 });

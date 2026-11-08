@@ -31,7 +31,10 @@
                 "output": "./svg"
               }
             ],
-            "styles": ["src/theme/variables.scss", "src/global.scss"],
+            "styles": [
+              "src/theme/variables.scss",
+              "src/global.scss"
+            ],
             "scripts": []
           },
           "configurations": {
@@ -98,6 +101,28 @@
               "src/**/*.ts",
               "src/**/*.html"
             ]
+          }
+        },
+        "test-build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "outputPath": "out-tsc/test",
+            "browser": "src/main.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "polyfills": [
+              "zone.js"
+            ],
+            "styles": [
+              "src/theme/variables.scss",
+              "src/global.scss"
+            ]
+          }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "buildTarget": "app:test-build",
+            "tsConfig": "tsconfig.spec.json"
           }
         }
       }

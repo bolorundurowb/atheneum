@@ -12,7 +12,7 @@ export class ArchiveIsbnService implements IsbnProvider {
 
   constructor(private httpService: HttpService) {}
 
-  async search(isbn: string): Promise<BookInfoDto> {
+  async search(isbn: string, signal?: AbortSignal): Promise<BookInfoDto> {
     try {
       const query = `isbn:${isbn} AND mediatype:texts`;
       const url =
@@ -21,7 +21,7 @@ export class ArchiveIsbnService implements IsbnProvider {
         `&fl%5B%5D=date&fl%5B%5D=isbn&fl%5B%5D=description&rows=1&output=json`;
 
       const response = await this.httpService
-        .get<any>(url, { timeout: 5000 })
+        .get<any>(url, { signal, timeout: 5000 })
         .toPromise();
       const data = response?.data?.response?.docs?.[0];
 

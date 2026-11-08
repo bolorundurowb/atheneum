@@ -48,11 +48,20 @@ export class HomePage implements OnInit {
 
   async loadData() {
     try {
-      this.stats = await this.statService.get();
       this.currentUser = this.authService.getUser();
-      this.topAuthors = await this.authorService.getTop();
-      this.recentBooks = await this.bookService.getRecent();
-      this.topPublishers = await this.publisherService.getTop();
+      const requests = [
+        this.statService.get().then(stats => { this.stats = stats; }),
+        this.authorService.getTop().then(authors => { this.topAuthors = authors; }),
+        this.bookService.getRecent().then(books => { this.recentBooks = books; }),
+        this.publisherService.getTop().then(publishers => { this.topPublishers = publishers; })
+      ];
+      const failures: unknown[] = [];
+      await Promise.all(requests.map(request => request.catch((error: unknown) => {
+        failures.push(error);
+      })));
+      if (failures.length) {
+        await this.notificationService.error(failures[0] as string);
+      }
     } catch (e) {
       await this.notificationService.error(e as string);
     }

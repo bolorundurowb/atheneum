@@ -18,10 +18,10 @@ export class OpenLibraryIsbnService implements IsbnProvider {
 
   constructor(private httpService: HttpService) {}
 
-  async search(isbn: string): Promise<BookInfoDto> {
+  async search(isbn: string, signal?: AbortSignal): Promise<BookInfoDto> {
     try {
       const response = await this.httpService
-        .get<any>(`${this.baseIsbnUrl}/${isbn}.json`, { timeout: 5000 })
+        .get<any>(`${this.baseIsbnUrl}/${isbn}.json`, { signal, timeout: 5000 })
         .toPromise();
       const data = response?.data;
 
@@ -42,7 +42,8 @@ export class OpenLibraryIsbnService implements IsbnProvider {
       };
 
       bookInfo.authors = await this.authorDetails(
-        data.authors?.map((x) => x.key)
+        data.authors?.map((x) => x.key),
+        signal
       );
 
       if (data.covers && data.covers[0]) {
@@ -73,7 +74,10 @@ export class OpenLibraryIsbnService implements IsbnProvider {
     }
   }
 
-  private async authorDetails(authorIds?: Array<string>): Promise<Array<any>> {
+  private async authorDetails(
+    authorIds?: Array<string>,
+    signal?: AbortSignal
+  ): Promise<Array<any>> {
     if (!authorIds?.length) {
       return [];
     }
@@ -81,7 +85,7 @@ export class OpenLibraryIsbnService implements IsbnProvider {
     const authors = await Promise.all(
       authorIds.map((x) =>
         this.httpService
-          .get<any>(`${this.baseUrl}${x}.json`, { timeout: 5000 })
+          .get<any>(`${this.baseUrl}${x}.json`, { signal, timeout: 5000 })
           .toPromise()
       )
     );

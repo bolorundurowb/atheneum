@@ -9,7 +9,7 @@ import {
 import { IsbnService } from '../../shared/services/isbn.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { Book, BookDocument } from '../schemas/book.schema';
-import { Model } from 'mongoose';
+import { Model, PipelineStage } from 'mongoose';
 import { Author, AuthorDocument } from '../schemas/author.schema';
 import { Publisher, PublisherDocument } from '../schemas/publisher.schema';
 import { UsersService } from '../../users/services/users.service';
@@ -42,24 +42,25 @@ export class BooksService {
     private scanFailureModel: Model<BookScanFailureDocument>
   ) {}
 
-  async getAll(ownerId: any, qm: BookQueryDto): Promise<Array<any>> {
-    const query: any = {
+  async getAll(ownerId: string, qm: BookQueryDto): Promise<Book[]> {
+    const query: Record<string, unknown> = {
       owner: ownerId
     };
 
     if (qm.publisherId) {
-      query['publisher._id'] = qm.publisherId;
+      query.publisher = qm.publisherId;
     }
 
     if (qm.authorId) {
-      query['authors._id'] = qm.authorId;
+      query.authors = qm.authorId;
     }
 
     if (qm.publishYear) {
       query.publishYear = qm.publishYear;
     }
 
-    if (qm.search) {
+    let searchQuery: Record<string, unknown> | undefined;
+    if (qm.search?.trim()) {
       const search = qm.search.trim();
       const yearSearch = /^[12]\d{3}$/.test(search);
       if (yearSearch) {
@@ -70,7 +71,7 @@ export class BooksService {
           $regex: new RegExp(safeSearch, 'i')
         };
 
-        const orQueries: Array<any> = [
+        const orQueries: Record<string, unknown>[] = [
           { title: caseInsensitiveSearch },
           { isbn: caseInsensitiveSearch },
           { isbn13: caseInsensitiveSearch },
@@ -78,7 +79,7 @@ export class BooksService {
           { 'authors.name': caseInsensitiveSearch }
         ];
 
-        query.$or = orQueries;
+        searchQuery = { $or: orQueries };
       }
     }
 
@@ -86,7 +87,21 @@ export class BooksService {
       query.isAvailable = Boolean(qm.available);
     }
 
-    const aggregateQuery = [
+    const pagination: PipelineStage[] = [
+      { $skip: Number(qm.skip) },
+      { $limit: Number(qm.limit) }
+    ];
+    const authorLookup: PipelineStage = {
+      $lookup: {
+        from: 'authors',
+        localField: 'authors',
+        foreignField: '_id',
+        as: 'authors'
+      }
+    };
+    const aggregateQuery: PipelineStage[] = [
+      { $match: query },
+      { $sort: { title: 1, _id: 1 } },
       {
         $lookup: {
           from: 'publishers',
@@ -98,21 +113,13 @@ export class BooksService {
       {
         $unwind: '$publisher'
       },
-      {
-        $lookup: {
-          from: 'authors',
-          localField: 'authors',
-          foreignField: '_id',
-          as: 'authors'
-        }
-      },
-      { $match: query },
-      { $sort: { title: 1 as any } },
-      { $skip: Number(qm.skip) },
-      { $limit: Number(qm.limit) }
+      // Keep the publisher unwind before pagination: it excludes missing publishers.
+      ...(searchQuery
+        ? [authorLookup, { $match: searchQuery }, ...pagination]
+        : [...pagination, authorLookup])
     ];
 
-    return this.bookModel.aggregate(aggregateQuery);
+    return this.bookModel.aggregate<Book>(aggregateQuery);
   }
 
   async getAllCount(ownerId: any): Promise<number> {
@@ -334,11 +341,8 @@ export class BooksService {
     });
   }
 
-  async removeOwned(ownerId: any): Promise<void> {
-    const books = await this.bookModel.find({ owner: ownerId });
-    await Promise.all(
-      books.map((x) => this.bookModel.findByIdAndDelete(x._id))
-    );
+  async removeOwned(ownerId: string): Promise<void> {
+    await this.bookModel.deleteMany({ owner: ownerId });
     await this.scanFailureModel.deleteMany({ owner: ownerId });
   }
 
