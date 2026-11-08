@@ -1,5 +1,5 @@
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ChangeDetectorRef } from '@angular/core';
+import { ApplicationRef, ChangeDetectorRef, provideZoneChangeDetection } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { NavController } from '@ionic/angular';
 import { describe, expect, it, vi } from 'vitest';
@@ -34,6 +34,8 @@ function setup() {
   TestBed.configureTestingModule({
     providers: [
       provideNoopAnimations(),
+      provideZoneChangeDetection(),
+      { provide: ChangeDetectorRef, useValue: { markForCheck: () => undefined } },
       { provide: StatisticService, useValue: { get: () => request(0) } },
       { provide: AuthorService, useValue: { getTop: () => request(1) } },
       { provide: BookService, useValue: { getRecent: () => request(2) } },
@@ -85,14 +87,14 @@ describe('Dashboard loading', () => {
   it('renders the dashboard after its requests settle', async () => {
     const { requests } = setup();
     const fixture = TestBed.createComponent(HomePage);
-    fixture.detectChanges();
+    fixture.autoDetectChanges();
     requests[0].resolve({ books: 5 });
     requests[1].resolve([]);
     requests[2].resolve([]);
     requests[3].resolve([]);
     await vi.waitFor(() => { expect(fixture.componentInstance.isLoading).toBe(false); });
     await fixture.whenStable();
-    fixture.componentRef.injector.get(ChangeDetectorRef).detectChanges();
+    TestBed.inject(ApplicationRef).tick();
     const element = fixture.nativeElement as HTMLElement;
     expect(element.querySelector('.page-title')?.textContent).toContain('reader.');
     expect(element.querySelector('.count')?.textContent).toContain('5');

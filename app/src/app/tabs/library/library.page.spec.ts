@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ChangeDetectorRef } from '@angular/core';
 import { InfiniteScrollCustomEvent, NavController, RefresherCustomEvent } from '@ionic/angular';
 import { Observable } from 'rxjs';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
@@ -26,6 +27,7 @@ function setup() {
   const calls: ListCall[] = [];
   const errors: unknown[] = [];
   TestBed.configureTestingModule({ providers: [
+    { provide: ChangeDetectorRef, useValue: { markForCheck: () => undefined } },
     { provide: BookService, useValue: { getAll$: (...args: Parameters<BookService['getAll$']>) => new Observable<BookCard[]>(observer => {
       const call: ListCall = {
         args, closed: false,

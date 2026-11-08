@@ -1,17 +1,19 @@
-import { inject, Injectable } from '@angular/core';
+import { inject } from '@angular/core';
 import {
-  HttpEvent,
-  HttpHandler,
   HttpHandlerFn,
-  HttpInterceptor,
   HttpInterceptorFn,
   HttpRequest
 } from '@angular/common/http';
-import { AuthService, NotificationService } from '../services';
-import { catchError, Observable, throwError } from 'rxjs';
+import { AuthService } from '../services';
+import { catchError, throwError } from 'rxjs';
+import { isApiRequest } from './api-request';
 
 export const errorInterceptor: HttpInterceptorFn = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {
   const authService = inject(AuthService);
+
+  if (!isApiRequest(request.url)) {
+    return next(request);
+  }
 
   return next(request).pipe(catchError(error => {
     const errorStatus = error.status;

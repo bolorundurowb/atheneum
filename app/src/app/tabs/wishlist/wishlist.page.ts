@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { NotificationService, WishlistService } from '../../services';
 import { FormsModule } from '@angular/forms';
 import { BookComponent } from '../../shared/book/book.component';
@@ -56,6 +56,7 @@ interface AddToWishlistPayload {
   ]
 })
 export class WishlistPage implements OnInit {
+  private changeDetector = inject(ChangeDetectorRef);
   private wishlistService = inject(WishlistService);
   private notificationService = inject(NotificationService);
 
@@ -76,6 +77,7 @@ export class WishlistPage implements OnInit {
       await this.loadData();
     } finally {
       this.isLoading = false;
+      this.changeDetector.markForCheck();
     }
   }
 
@@ -94,6 +96,7 @@ export class WishlistPage implements OnInit {
       await this.notificationService.error(e as string);
     } finally {
       this.isAdding = false;
+      this.changeDetector.markForCheck();
     }
   }
 
@@ -111,6 +114,8 @@ export class WishlistPage implements OnInit {
       this.wishlist = await this.wishlistService.getAll();
     } catch (e) {
       await this.notificationService.error(e as string);
+    } finally {
+      this.changeDetector.markForCheck();
     }
   }
 }

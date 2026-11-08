@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import {
   AuthorService,
   AuthService,
@@ -31,6 +31,7 @@ import { BookComponent } from '../../shared/book/book.component';
   ]
 })
 export class HomePage implements OnInit {
+  private changeDetector = inject(ChangeDetectorRef);
   private bookService = inject(BookService);
   private authorService = inject(AuthorService);
   private publisherService = inject(PublisherService);
@@ -64,6 +65,8 @@ export class HomePage implements OnInit {
       }
     } catch (e) {
       await this.notificationService.error(e as string);
+    } finally {
+      this.changeDetector.markForCheck();
     }
   }
 
@@ -71,6 +74,7 @@ export class HomePage implements OnInit {
     this.isLoading = true;
     await this.loadData();
     this.isLoading = false;
+    this.changeDetector.markForCheck();
   }
 
   async handleRefresh(event: any) {

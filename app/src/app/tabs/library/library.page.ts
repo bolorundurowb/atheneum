@@ -1,4 +1,4 @@
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { AuthorService, BookService, NotificationService, PublisherService } from '../../services';
 import {
   InfiniteScrollCustomEvent,
@@ -66,6 +66,7 @@ interface BookRequest {
   ]
 })
 export class LibraryPage implements OnInit {
+  private changeDetector = inject(ChangeDetectorRef);
   private bookService = inject(BookService);
   private authorService = inject(AuthorService);
   private publisherService = inject(PublisherService);
@@ -99,6 +100,7 @@ export class LibraryPage implements OnInit {
         if (!request.append) {
           this.hasMore = false;
         }
+        this.changeDetector.markForCheck();
         const page = request.append ? this.currentPage + 1 : 1;
         return timer(request.debounceMs).pipe(
           switchMap(() => this.bookService.getAll$(
@@ -118,6 +120,7 @@ export class LibraryPage implements OnInit {
           finalize(() => {
             this.isLoading = false;
             this.isLoadingMore = false;
+            this.changeDetector.markForCheck();
             void request.target?.complete();
           })
         );
@@ -136,7 +139,11 @@ export class LibraryPage implements OnInit {
       .then((result) => { this.publishers = result; })
       .catch((error) => this.notificationService.error(error as string));
 
-    await Promise.all([authors, publishers]);
+    try {
+      await Promise.all([authors, publishers]);
+    } finally {
+      this.changeDetector.markForCheck();
+    }
   }
 
   async goToBookDetails(book: BookCard) {
