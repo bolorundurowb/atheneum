@@ -23,12 +23,7 @@ export class User {
   @Prop({ required: true })
   emailAddress: string;
 
-  @Prop({
-    set: (value) => {
-      const salt = bcrypt.genSaltSync(10);
-      return bcrypt.hashSync(value, salt);
-    }
-  })
+  @Prop()
   passwordHash: string;
 
   @Prop()
@@ -42,3 +37,9 @@ export class User {
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+UserSchema.pre('save', async function () {
+  if (this.isModified('passwordHash')) {
+    this.passwordHash = await bcrypt.hash(this.passwordHash, 10);
+  }
+});
