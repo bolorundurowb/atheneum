@@ -34,3 +34,5 @@ export class WishList {
 }
 
 export const WishListSchema = SchemaFactory.createForClass(WishList);
+
+WishListSchema.index({ owner: 1, title: 1 });

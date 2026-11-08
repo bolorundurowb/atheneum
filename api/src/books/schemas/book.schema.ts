@@ -47,7 +47,7 @@ export class Book {
   source: string;
 
   @Prop({ type: String, ref: 'User' })
-  owner: User;
+  owner: User | string;
 
   @Prop({ type: [{ type: String, ref: 'Author' }] })
   authors: Array<Author>;
@@ -74,3 +74,8 @@ export class Book {
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);
+
+BookSchema.index({ owner: 1, title: 1, _id: 1 });
+BookSchema.index({ owner: 1, createdAt: -1 });
+BookSchema.index({ owner: 1, isbn: 1 });
+BookSchema.index({ owner: 1, isbn13: 1 });
