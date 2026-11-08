@@ -1,4 +1,6 @@
 .book {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 250px;
   height: 250px;
   margin-top: 10px;
   border-radius: 10px;

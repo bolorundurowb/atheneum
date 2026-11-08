@@ -6,8 +6,8 @@
 
     <ion-searchbar
       show-clear-button="never"
-      [(ngModel)]="search"
-      (keyup)="handleSearch($event)"></ion-searchbar>
+      [ngModel]="search"
+      (ionInput)="handleSearch($event.detail.value)"></ion-searchbar>
 
     <div class="filters">
       <ion-select
@@ -63,7 +63,7 @@
       @if (books.length) {
         <ion-grid>
           <ion-row>
-            @for (book of books; track $index) {
+            @for (book of books; track book._id) {
             <ion-col size="4">
               <app-book [book]="book" (click)="goToBookDetails(book)"></app-book>
             </ion-col>
@@ -74,7 +74,7 @@
     </div>
 
     @if (books.length) {
-      <ion-infinite-scroll (ionInfinite)="handleScrollEnd($event)">
+      <ion-infinite-scroll [disabled]="!hasMore" (ionInfinite)="handleScrollEnd($event)">
         <ion-infinite-scroll-content loadingSpinner="lines-sharp"></ion-infinite-scroll-content>
       </ion-infinite-scroll>
     }

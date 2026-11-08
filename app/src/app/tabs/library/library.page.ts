@@ -1,7 +1,8 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
 import { AuthorService, BookService, NotificationService, PublisherService } from '../../services';
 import {
   InfiniteScrollCustomEvent,
+  RefresherCustomEvent,
   IonCol,
   IonContent,
   IonGrid,
@@ -21,6 +22,23 @@ import {
 import { FormsModule } from '@angular/forms';
 import { BookComponent } from '../../shared/book/book.component';
 import { EmptyComponent } from '../../shared/empty/empty.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, EMPTY, finalize, Subject, switchMap, tap, timer } from 'rxjs';
+import { BookCard } from '../../models/book';
+
+interface LibraryQuery {
+  search: string;
+  publisherId: string;
+  authorId: string;
+  publishYear?: number;
+}
+
+interface BookRequest {
+  query: LibraryQuery;
+  append: boolean;
+  debounceMs: number;
+  target?: { complete(): Promise<void> };
+}
 
 @Component({
   selector: 'app-library',
@@ -55,7 +73,7 @@ export class LibraryPage implements OnInit {
   private navCtrl = inject(NavController);
 
   isLoading = false;
-  books: any[] = [];
+  books: BookCard[] = [];
 
   authors: any[] = [];
   publishers: any[] = [];
@@ -64,20 +82,50 @@ export class LibraryPage implements OnInit {
   authorId?: string;
   publisherId?: string;
   yearFilter?: string;
+  hasMore = false;
+  isLoadingMore = false;
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly requests = new Subject<BookRequest>();
+  private lastQueryKey?: string;
+  private loadedQuery?: LibraryQuery;
   currentPage = 1;
   limit = 50;
 
-  async ngOnInit() {
-    this.isLoading = true;
+  ngOnInit(): void {
+    this.requests.pipe(
+      switchMap(request => {
+        this.isLoading = !request.append && !request.target;
+        this.isLoadingMore = request.append;
+        if (!request.append) {
+          this.hasMore = false;
+        }
+        const page = request.append ? this.currentPage + 1 : 1;
+        return timer(request.debounceMs).pipe(
+          switchMap(() => this.bookService.getAll$(
+            (page - 1) * this.limit, this.limit, request.query.search,
+            request.query.publisherId, request.query.authorId, request.query.publishYear
+          )),
+          tap(books => {
+            this.books = request.append ? [...this.books, ...books] : books;
+            this.currentPage = page;
+            this.hasMore = books.length === this.limit;
+            this.loadedQuery = request.query;
+          }),
+          catchError((error: unknown) => {
+            void this.notificationService.error(error as string);
+            return EMPTY;
+          }),
+          finalize(() => {
+            this.isLoading = false;
+            this.isLoadingMore = false;
+            void request.target?.complete();
+          })
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe();
     void this.loadFilterOptions();
-
-    try {
-      this.books = await this.fetchBooks(this.getSkip(), this.limit);
-    } catch (e) {
-      await this.notificationService.error(e as string);
-    } finally {
-      this.isLoading = false;
-    }
+    this.reload(0);
   }
 
   private async loadFilterOptions() {
@@ -91,86 +139,43 @@ export class LibraryPage implements OnInit {
     await Promise.all([authors, publishers]);
   }
 
-  async goToBookDetails(book: any) {
+  async goToBookDetails(book: BookCard) {
     await this.navCtrl.navigateForward('/details/book', { queryParams: { book: JSON.stringify(book) } });
   }
 
-  async handlePullRefresh(event: any) {
-    this.currentPage = 1;
-    const skip = this.getSkip();
+  handlePullRefresh(event: RefresherCustomEvent): void {
+    this.reload(0, event.target);
+  }
 
-    try {
-      this.books = await this.fetchBooks(skip, this.limit);
-    } catch (e) {
-      await this.notificationService.error(e as string);
-    } finally {
-      event.target.complete();
+  handleScrollEnd(event: InfiniteScrollCustomEvent): void {
+    if (this.isLoading || this.isLoadingMore || !this.hasMore || !this.loadedQuery) {
+      void event.target.complete();
+      return;
     }
+    this.requests.next({ query: this.loadedQuery, append: true, debounceMs: 0, target: event.target });
   }
 
-  async handleScrollEnd(event: any) {
-    try {
-      // check to see if there are more books before querying
-      if ((this.books.length % this.limit) !== 0) {
-        console.log('There arent more books because the initial load did not meet the limit');
-      } else {
-        this.currentPage += 1;
-        const skip = this.getSkip();
-        const books = await this.fetchBooks(skip, this.limit);
-        this.books = [ ...this.books, ...books ];
-      }
-    } catch (e) {
-      await this.notificationService.error(e as string);
-    } finally {
-      await (event as InfiniteScrollCustomEvent).target.complete();
+  handleSearch(value: string | null | undefined): void {
+    this.search = value ?? '';
+    this.reload(300);
+  }
+
+  handleFilter(): void {
+    this.reload(0);
+  }
+
+  private reload(debounceMs: number, target?: BookRequest['target']): void {
+    const query: LibraryQuery = {
+      search: this.search?.trim() ?? '',
+      publisherId: this.publisherId ?? '',
+      authorId: this.authorId ?? '',
+      publishYear: this.yearFilter ? Number(this.yearFilter) : undefined
+    };
+    const key = JSON.stringify(query);
+    if (!target && key === this.lastQueryKey) {
+      return;
     }
-  }
-
-  async handleSearch(event: any) {
-    console.log(event.key, this.search);
-
-    this.books = [];
-    this.isLoading = true;
-    this.currentPage = 1;
-    const skip = this.getSkip();
-
-    try {
-      this.books = await this.fetchBooks(skip, this.limit);
-    } catch (e) {
-      await this.notificationService.error(e as string);
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  async handleFilter() {
-    this.books = [];
-    this.isLoading = true;
-    this.currentPage = 1;
-    const skip = this.getSkip();
-
-    try {
-      this.books = await this.fetchBooks(skip, this.limit);
-    } catch (e) {
-      await this.notificationService.error(e as string);
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  fetchBooks(skip: number, limit: number) {
-    const publishYear = this.yearFilter ? Number(this.yearFilter) : undefined;
-    return this.bookService.getAll(
-      skip,
-      limit,
-      this.search,
-      this.publisherId,
-      this.authorId,
-      publishYear
-    );
-  }
-
-  getSkip() {
-    return (this.currentPage - 1) * this.limit;
+    this.lastQueryKey = key;
+    this.requests.next({ query, append: false, debounceMs, target });
   }
 }
